@@ -46,6 +46,10 @@ python3 -m http.server 8655
 Then open `http://localhost:8655`. To deploy, upload the folder to any static
 host.
 
+          **OR**
+
+Use the web app version at : https://aether-trade.netlify.app/
+
 First run: go to **Import → Your trading rules** and set your caps and setups.
 They default to a small-account model; they are meant to be changed. Then import
 your statement from the **Import** tab.
