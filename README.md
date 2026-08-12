@@ -7,6 +7,17 @@ Everything lives in your browser. There is no account, no server, and no network
 call — the app works with the wifi off, and your trading history never leaves
 your device.
 
+This is a passion project of mine because ever since i started trading i was always
+looking for a journal or a dashboard where i could track my progress put in my rules
+do all that but they were never free or if they were then they were sketchy af
+
+The parser is fully developed by Claude Opus 4.8 and Fable 5, I made the UI with little
+bug fixes using claude.
+
+If you find any bugs please lmk at morayyan.abbasx@gmail.com ALSO theres a website version
+where no download is needed, everything is still stored inside your browser so same security
+the URL is https://aether-trade.netlify.app/
+
 ## What it does
 
 - **Import** an MT5 *Trade History Report* (`.html`, the file MT5 exports from
