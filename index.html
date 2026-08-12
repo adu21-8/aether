@@ -514,6 +514,9 @@ const DEFAULT_SETTINGS={
   setups:DEFAULT_SETUPS.slice(),
   instruments:[],
   pointValues:{},
+  demoData:false,
+  importsSinceBackup:0,
+  tzHintDismissed:false,
   capFloor:15,
   account:null,summary:null
 };
@@ -1115,9 +1118,12 @@ function renderDashboard(){
     renderDebriefPanel(root);
     root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),
       el('div',{},'Import your MT5 statement to begin.'),
-      el('div',{style:'margin-top:14px'},el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'))));
+      el('div',{style:'margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'},
+        el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'),
+        el('button',{class:'btn',onclick:loadDemoData},'▶ Try with sample data'))));
     return;
   }
+  if(STATE.settings.demoData)root.append(el('div',{class:'note',style:'margin-bottom:14px'},'You\'re looking at sample data — a fabricated account for exploring. Clear it under Import, or just import a real statement over it.'));
   renderPeriodStrip(root,list);        // today / week / month / all-time at a glance
   dashHero(root,list);                 // headline + equity curve
   renderDebriefPanel(root);            // coach — collapsed below
@@ -1209,7 +1215,9 @@ function renderInsights(){
   if(!list.length){
     root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),
       el('div',{},'Import your MT5 statement to see your analytics.'),
-      el('div',{style:'margin-top:14px'},el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'))));
+      el('div',{style:'margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'},
+        el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'),
+        el('button',{class:'btn',onclick:loadDemoData},'▶ Try with sample data'))));
     return;
   }
   if(!DASH_PAINT[STATE.dashTab])STATE.dashTab='distribution';
@@ -2019,12 +2027,37 @@ function renderImport(){
     sp.append(sg);root.append(sp);
   }
 
+  // sample data
+  const demoP=el('div',{class:'panel',style:'margin-bottom:14px'});
+  demoP.append(el('div',{class:'note',style:'margin-bottom:12px'},STATE.settings.demoData
+    ?'Sample data is loaded. Importing a real statement clears it automatically.'
+    :'No statement handy? Load a fabricated account — six weeks of trades, a rule-breaking day, plans and a journal entry — and explore every page. One click removes it again.'));
+  demoP.append(STATE.settings.demoData
+    ?el('button',{class:'btn',onclick:async()=>{await clearDemoData();renderImport();}},'✕ Clear sample data')
+    :el('button',{class:'btn',onclick:loadDemoData},'▶ Load sample data'));
+  root.append(el('h2',{class:'sec'},'Sample data'),demoP);
+
   // timezone setting
   root.append(el('h2',{class:'sec'},'Settings'));
   const tzPanel=el('div',{class:'panel',style:'margin-bottom:14px'});
   const tzIn=el('input',{type:'number',step:'1',value:STATE.settings.brokerOffsetHours||0,style:'max-width:120px',onchange:async e=>{STATE.settings.brokerOffsetHours=+e.target.value||0;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);toast('Timezone offset updated','good');}});
   tzPanel.append(el('label',{class:'fld'},'Statement-time → your-time offset (hours)'),tzIn,el('div',{class:'faint',style:'font-size:12px;margin-top:6px'},'MT5 timestamps are in your broker server time. If that clock differs from the one you think in, set the hour offset here so session tagging and time-of-day stats line up with your day. Leave at 0 if the statement times already match.'));
   root.append(tzPanel);
+
+  // offset suggestion — statements carry broker server time; most MT5 servers run UTC+3
+  if(STATE.account&&!STATE.account.demo&&!(+STATE.settings.brokerOffsetHours)&&!STATE.settings.tzHintDismissed){
+    const dev=-new Date().getTimezoneOffset()/60;
+    const sug=Math.round((dev-3)*2)/2;
+    if(sug!==0){
+      const sTxt=(sug>0?'+':'')+sug;
+      const hint=el('div',{class:'panel',style:'margin-bottom:14px'});
+      hint.append(el('div',{class:'note',style:'margin-bottom:12px'},'Most MT5 brokers run server time at UTC+3. Your device is at UTC'+(dev>=0?'+':'')+dev+' — if your broker is one of them, an offset of '+sTxt+'h lines sessions up with your clock. It\'s a guess, not a reading: check one trade\'s open time before trusting it.'),
+        el('div',{style:'display:flex;gap:10px;flex-wrap:wrap'},
+          el('button',{class:'btn primary',onclick:async()=>{STATE.settings.brokerOffsetHours=sug;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);toast('Offset set to '+sTxt+'h — sessions re-tagged','good');renderImport();}},'Use '+sTxt+'h'),
+          el('button',{class:'btn ghost',onclick:async()=>{STATE.settings.tzHintDismissed=true;await saveSettings();renderImport();}},'No thanks')));
+      root.append(hint);
+    }
+  }
 
   // trading rules — the risk model the rule engine judges every trade against
   root.append(el('h2',{class:'sec'},'Your trading rules'));
@@ -2067,9 +2100,141 @@ function renderImport(){
   root.append(el('div',{class:'warn',style:'margin-bottom:12px'},'⚠ Everything (trades, notes, tags, screenshots, settings) lives in this browser\'s IndexedDB. Clearing site data / browser data will erase it permanently. Export a backup regularly — especially before clearing anything.'));
   const bk=el('div',{style:'display:flex;gap:10px;flex-wrap:wrap'});
   bk.append(el('button',{class:'btn primary',onclick:exportBackup},'⤓ Export full backup (.json)'),
-    el('button',{class:'btn',onclick:()=>$('#restoreFile').click()},'⤒ Restore from backup'));
+    el('button',{class:'btn',onclick:()=>$('#restoreFile').click()},'⤒ Restore from backup'),
+    el('button',{class:'btn',onclick:exportTradesCSV},'⇥ Export trades (.csv)'));
   const rf=el('input',{type:'file',accept:'.json',id:'restoreFile',style:'display:none',onchange:e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';}});
   root.append(bk,rf);
+}
+
+/* ============================================================
+   SAMPLE DATA (demo mode) — a fabricated account so the app can be
+   explored without an MT5 statement. Every record carries demo:true and
+   is swept by clearDemoData(); importing a real statement clears it too.
+   ============================================================ */
+function demoRng(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+function demoDataset(){
+  const rnd=demoRng(20260812);
+  const pad=n=>String(n).padStart(2,'0');
+  const fmt=ms=>{const d=new Date(ms);return d.getUTCFullYear()+'.'+pad(d.getUTCMonth()+1)+'.'+pad(d.getUTCDate())+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());};
+  const dkey=ms=>{const d=new Date(ms);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate());};
+  const SYMS={EURUSD:{base:1.083,jit:0.004,dp:5,stop:()=>0.0012+rnd()*0.0022,vol:()=>+(0.02+rnd()*0.08).toFixed(2)},
+              XAUUSD:{base:4720,jit:55,dp:2,stop:()=>3+rnd()*6,vol:()=>+(0.01+rnd()*0.04).toFixed(2)},
+              US30:{base:39150,jit:380,dp:1,stop:()=>45+rnd()*110,vol:()=>+(0.1+rnd()*0.4).toFixed(2)}};
+  const EMOS=['Calm','Confident','FOMO','Anxious','Greedy','Frustrated','Bored','Disciplined'];
+  const tags=SETUPS.length?SETUPS:DEFAULT_SETUPS;
+  // weekdays over the last ~6 weeks, oldest first, today (or last weekday) last
+  const days=[];const nowMs=Date.now();
+  for(let d=42;d>=0;d--){const t=new Date(nowMs-d*864e5);const wd=t.getUTCDay();if(wd===0||wd===6)continue;days.push(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate()));}
+  let ticket=990000001;const trades=[];
+  const mk=(dayMs,h,m,symName,type,profit,o)=>{
+    o=o||{};const S=SYMS[symName];const dir=type==='buy'?1:-1;
+    const open=+(S.base+S.jit*(rnd()-0.5)*2).toFixed(S.dp);
+    const stop=S.stop();const win=profit>0;
+    const t={ticket:String(ticket++),symbol:symName,type,volume:S.vol(),
+      openTime:fmt(dayMs+h*3600e3+m*60e3),closeTime:fmt(dayMs+h*3600e3+(m+12+Math.floor(rnd()*75))*60e3),
+      openPrice:open,sl:+(open-dir*stop).toFixed(S.dp),tp:+(open+dir*stop*2.1).toFixed(S.dp),
+      closePrice:+(open+dir*(win?stop*1.6:-stop)).toFixed(S.dp),
+      commission:0,swap:0,profit:+profit.toFixed(2),
+      setups:o.setups!==undefined?o.setups:(rnd()<0.65?[tags[Math.floor(rnd()*tags.length)]]:[]),
+      note:o.note||'',emotion:o.emotion!==undefined?o.emotion:(rnd()<0.5?EMOS[Math.floor(rnd()*EMOS.length)]:''),
+      confirmation:rnd()<0.4,plannedR:null,actualR:null,
+      riskUSD:o.riskUSD!==undefined?o.riskUSD:(rnd()<0.6?5:null),
+      session:null,demo:true,updatedAt:Date.now()};
+    if(o.openTime)t.openTime=o.openTime;if(o.closeTime)t.closeTime=o.closeTime;
+    trades.push(t);return t;};
+  const symAt=i=>['EURUSD','XAUUSD','US30'][i%3];
+  // background scatter — most days see one or two trades
+  const badDay=days[days.length-8],capDay=days[days.length-15],today=days[days.length-1];
+  days.forEach((dayMs,i)=>{
+    if(dayMs===badDay||dayMs===capDay||dayMs===today)return;
+    if(rnd()<0.38)return;
+    const n=rnd()<0.35?2:1;
+    for(let k=0;k<n;k++){
+      const win=rnd()<0.56;
+      mk(dayMs,7+Math.floor(rnd()*11),Math.floor(rnd()*59),symAt(i+k),rnd()<0.5?'buy':'sell',
+         win?(2+rnd()*6.5):-(1.5+rnd()*3.2));
+    }
+  });
+  // scripted: a single oversized loss (breaks the default per-trade cap)
+  mk(capDay,14,10,'XAUUSD','buy',-6.4,{emotion:'Frustrated',riskUSD:5,setups:[tags[0]],
+    note:'Moved my stop once and paid for it. The first stop was the right one.'});
+  // scripted: the bad day — three losses, a revenge entry inside the break window,
+  // then one more trade after the daily cap was already gone
+  mk(badDay,9,10,'EURUSD','sell',-3.8,{emotion:'Anxious',riskUSD:5});
+  const l2=mk(badDay,11,40,'XAUUSD','buy',-4.1,{emotion:'Frustrated',riskUSD:5});
+  const l3=mk(badDay,13,5,'XAUUSD','buy',-3.6,{emotion:'FOMO',riskUSD:5,
+    note:'Same idea as the last one. It was not a new setup, it was a rematch.'});
+  l3.closeTime=fmt(badDay+13*3600e3+18*60e3);
+  mk(badDay,13,22,'XAUUSD','buy',-2.9,{emotion:'FOMO',riskUSD:5,setups:[],
+    openTime:fmt(badDay+13*3600e3+22*60e3),note:'Four minutes after the stopout. No plan, just anger.'});
+  mk(badDay,15,0,'US30','sell',1.2,{emotion:'',riskUSD:3});
+  // scripted: a clean streak for the best-run stat
+  const s1=days[days.length-20],s2=days[days.length-19];
+  const w1=mk(s1,8,30,'EURUSD','buy',6.8,{emotion:'Disciplined',riskUSD:5,setups:[tags[0]]});
+  mk(s1,12,15,'US30','sell',4.9,{emotion:'Calm',riskUSD:5});
+  mk(s2,9,45,'XAUUSD','buy',7.4,{emotion:'Confident',riskUSD:5,setups:[tags.length>1?tags[1]:tags[0]]});
+  // today: one win, one small loss, so the day strip is alive
+  mk(today,8,5,'EURUSD','buy',4.1,{emotion:'Calm',riskUSD:5,setups:[tags[0]]});
+  mk(today,10,35,'US30','sell',-2.3,{emotion:'',riskUSD:5});
+  // a plan that reconciles onto the streak trade, and one still pending
+  const plans=[
+    {id:'demo-plan-1',symbol:w1.symbol,dir:w1.type,entry:w1.openPrice,sl:w1.sl,tp:w1.tp,
+     setups:w1.setups.slice(),session:'London',plannedR:2,riskUSD:5,
+     note:'Planned at the level the night before. Waited for the retest.',
+     createdMs:parseMT5Date(w1.openTime)-2*3600e3,status:'pending',ticket:null,demo:true},
+    {id:'demo-plan-2',symbol:'XAUUSD',dir:'sell',entry:+(SYMS.XAUUSD.base+80).toFixed(2),sl:+(SYMS.XAUUSD.base+92).toFixed(2),tp:+(SYMS.XAUUSD.base+40).toFixed(2),
+     setups:[tags[0]],session:'NY',plannedR:3,riskUSD:5,note:'Waiting for price to reach the zone.',
+     createdMs:Date.now()-3600e3,status:'pending',ticket:null,demo:true}];
+  const debriefs=[{date:dkey(badDay),createdAt:badDay,updatedAt:badDay,demo:true,
+    text:'## What happened\nThree losses before lunch and I knew the third was a rematch, not a setup. Then I re-entered four minutes after the stopout.\n\n**The cap did its job** — the damage stopped where the rules said it would.\n\n## Tomorrow\n1. After two losses, close the platform for an hour.\n2. No re-entry on the same idea without a fresh signal.'}];
+  return {trades,plans,debriefs};
+}
+async function loadDemoData(){
+  if(!DB.db)await openDB();
+  const {trades,plans,debriefs}=demoDataset();
+  for(const t of trades)await idbPut('trades',t);
+  for(const p of plans)await idbPut('plans',p);
+  for(const d of debriefs)await idbPut('debriefs',d);
+  STATE.settings.demoData=true;
+  STATE.settings.account={name:'Sample data',number:'DEMO',currency:'USD',server:'Aether demo',kind:'sample',company:'Not a real account',demo:true};
+  STATE.settings.summary=null;
+  await saveSettings();
+  await loadAll();
+  await reconcilePlans();
+  toast('Sample data loaded — explore freely, clear it from Import','good');
+  go('dashboard');
+}
+async function clearDemoData(silent){
+  if(!DB.db)await openDB();
+  for(const t of await idbAll('trades'))if(t.demo)await idbDel('trades',String(t.ticket));
+  for(const p of await idbAll('plans'))if(p.demo)await idbDel('plans',p.id);
+  for(const d of await idbAll('debriefs'))if(d.demo)await idbDel('debriefs',d.date);
+  if(STATE.settings.account&&STATE.settings.account.demo){STATE.settings.account=null;STATE.settings.summary=null;}
+  STATE.settings.demoData=false;await saveSettings();
+  await loadAll();
+  if(!silent)toast('Sample data cleared','good');
+}
+
+/* ---------- CSV export of the enriched trade log ---------- */
+function csvCell(v){
+  if(v==null)return'';
+  if(Array.isArray(v))v=v.join(' | ');
+  if(typeof v==='boolean')v=v?'yes':'';
+  v=String(v);
+  if(/^[=+@\t]/.test(v))v="'"+v;         // spreadsheet formula-injection guard
+  return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+}
+function exportTradesCSV(){
+  const list=STATE.trades.slice().sort((a,b)=>(a.openMs||0)-(b.openMs||0));
+  if(!list.length){toast('Nothing to export — import a statement first',true);return;}
+  const cols=['ticket','symbol','type','volume','openTime','closeTime','openPrice','closePrice','sl','tp','commission','swap','profit','R','session','weekday','dayKey','weekKey','durationMin','riskUSD','plannedR','setups','emotion','confirmation','revenge','ruleBroken','violations','note'];
+  const rows=[cols.join(',')];
+  for(const t of list)rows.push(cols.map(c=>csvCell(c==='violations'?(t.violations||[]).map(x=>x.label):t[c])).join(','));
+  const blob=new Blob(['﻿'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=el('a',{href:url,download:'aether-trades-'+new Date().toISOString().slice(0,10)+'.csv'});
+  document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+  toast('CSV exported — '+list.length+' trades','good');
 }
 
 async function handleStatement(file){
@@ -2081,6 +2246,7 @@ async function handleStatement(file){
     const parsed=parseMT5(text);
     if(!parsed.trades.length)throw new Error('No closed positions found in the file.');
     if(!DB.db)await openDB(); // self-heal if IndexedDB wasn't ready at boot
+    if(STATE.settings.demoData)await clearDemoData(true);   // a real statement replaces the sample account
     // merge: preserve enrichment + dedupe by ticket
     let added=0,updated=0;const now=Date.now();
     for(const pt of parsed.trades){
@@ -2093,6 +2259,9 @@ async function handleStatement(file){
     await loadAll();
     await reconcilePlans();
     toast(`Imported ${parsed.trades.length} trades — ${added} new, ${updated} updated`,'good');
+    STATE.settings.importsSinceBackup=(STATE.settings.importsSinceBackup||0)+1;await saveSettings();
+    if(STATE.settings.importsSinceBackup%3===0)
+      setTimeout(()=>toast(STATE.settings.importsSinceBackup+' imports since your last backup — everything lives in this browser, so export one from Import → Backup'),3100);
     renderImport();
   }catch(err){console.error(err);loader.remove();
     const root=$('#page-import');
@@ -2116,6 +2285,7 @@ async function exportBackup(){
   const payload={app:'Aether',version:1,exported:new Date().toISOString(),settings:STATE.settings,trades,debriefs,livetrades,images:imgOut};
   const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
   const url=URL.createObjectURL(blob);const a=el('a',{href:url,download:'aether-backup-'+new Date().toISOString().slice(0,10)+'.json'});document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+  STATE.settings.importsSinceBackup=0;await saveSettings();
   toast('Backup downloaded — '+trades.length+' trades, '+images.length+' images','good');
 }
 function blobToB64(blob){return new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(blob);});}

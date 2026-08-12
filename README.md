@@ -34,6 +34,11 @@ the URL is https://aether-trade.netlify.app/
   a watchlist, position-size calculator, and key levels per instrument.
 - **Daily journal** — write a reflection each day; simple markdown supported.
 - **Checklist** — live pooled status against your caps, plus a pre-trade check.
+- **Sample data** — no statement handy? Load a fabricated account (six weeks of
+  trades, a rule-breaking day, plans and a journal entry) and explore every
+  page. One click removes it, and importing a real statement clears it too.
+- **CSV export** — the full enriched trade log (R, session, setups, emotion,
+  violations, notes) for your own spreadsheets.
 
 ## Getting started
 
@@ -57,7 +62,8 @@ your statement from the **Import** tab.
 ## Notes
 
 - **Your data is only in this browser.** Clearing site data erases it. Use
-  *Export full backup* from the Import tab regularly.
+  *Export full backup* from the Import tab regularly — Aether reminds you every
+  few imports if you haven't.
 - Instruments are discovered from what you import — you don't configure them,
   though you can list extras up front before your first import.
 - The account currency is read from your statement, so amounts display in the
