@@ -29,7 +29,9 @@ self.addEventListener('fetch', e => {
   const isDoc = req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html');
   if (isDoc) {
     e.respondWith(
-      fetch(req).then(res => {
+      // no-cache: revalidate with the server rather than trusting the HTTP
+      // cache, so a deployed update reaches users on the next load
+      fetch(req, { cache: 'no-cache' }).then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(req, copy));
         return res;

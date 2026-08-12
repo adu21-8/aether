@@ -387,7 +387,7 @@ canvas{display:block;width:100%}
     </nav>
     <div class="sidefoot">
       <div>MT5 trade journal</div>
-      <div style="margin-top:4px">$10 daily · $20 weekly cap</div>
+      <div style="margin-top:4px" id="sidefootCaps"></div>
     </div>
   </aside>
 
@@ -474,6 +474,8 @@ let RULES=Object.assign({},DEFAULT_RULES);
 function applyUserConfig(){
   RULES=Object.assign({},DEFAULT_RULES,STATE.settings.rules||{});
   setCurrency((STATE.account&&STATE.account.currency)||STATE.settings.currency);
+  const sf=document.getElementById('sidefootCaps');
+  if(sf)sf.textContent=amt(RULES.dailyLoss)+' daily · '+amt(RULES.weeklyLoss)+' weekly cap';
   refreshInstruments();
   if(STATE.filter!=='ALL'&&!INSTRUMENTS.includes(STATE.filter))STATE.filter='ALL';
   renderSymFilter();
@@ -511,6 +513,7 @@ const DEFAULT_SETTINGS={
   rules:Object.assign({},DEFAULT_RULES),
   setups:DEFAULT_SETUPS.slice(),
   instruments:[],
+  pointValues:{},
   capFloor:15,
   account:null,summary:null
 };
@@ -982,7 +985,6 @@ async function persistEnrichment(t){
 
 function fmtTime(ms){if(!ms)return '';const d=new Date(ms);return d.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 function todayKeyLocal(){const d=new Date(Date.now()+(STATE.settings.brokerOffsetHours||0)*3600e3);return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0');}
-function todayWeekdayLocal(){return WD[new Date(Date.now()+(STATE.settings.brokerOffsetHours||0)*3600e3).getUTCDay()];}
 async function saveDebrief(d){
   if(!DB.db)await openDB();
   await idbPut('debriefs',d);
@@ -1808,17 +1810,33 @@ async function reconcilePlans(){
   }
   STATE.plans=(await idbAll('plans')).sort((a,b)=>b.createdMs-a.createdMs);
 }
-function calcLots(sym,riskUSD,stop,usdjpy){
+/* Default value of a 1.0 price move per 1.0 lot. Known contracts only —
+   anything else must come from the user (broker contract specs vary, and a
+   wrong guess here sizes a real position wrong). */
+function pointValuePerLot(sym){
+  if(/^XAU/i.test(sym))return 100;                    // gold: 100 oz per lot
+  if(/^XAG/i.test(sym))return 5000;                   // silver: 5000 oz per lot
+  if(/^[A-Z]{3}USD$/i.test(sym))return 100000;        // FX quoted in USD: 1 lot = 100k base units
+  return null;                                        // indices/CFDs: broker-specific
+}
+function calcLots(sym,riskUSD,stop,usdjpy,pointValue){
   if(!(riskUSD>0)||!(stop>0))return null;
-  if(/JPY/i.test(sym)){if(!(usdjpy>0))return{err:'Enter current USDJPY to size a yen pair'};const pv=1000/usdjpy;const lots=riskUSD/(stop*pv);return{lots,unitNote:'$'+(pv*lots).toFixed(2)+' per pip · stop '+stop+' pips'};}
-  const pv=100;const lots=riskUSD/(stop*pv);return{lots,unitNote:'$'+(pv*lots).toFixed(2)+' per $1 move · stop $'+stop};
+  if(/JPY/i.test(sym)){if(!(usdjpy>0))return{err:'Enter current USDJPY to size a yen pair'};const pv=1000/usdjpy;const lots=riskUSD/(stop*pv);return{lots,unitNote:CURSYM+(pv*lots).toFixed(2)+' per pip · stop '+stop+' pips'};}
+  const pv=(pointValue>0)?pointValue:pointValuePerLot(sym);
+  if(!(pv>0))return{err:'Enter this instrument\'s value per 1.0 price move per 1.0 lot — it\'s in your broker\'s contract specification.'};
+  const lots=riskUSD/(stop*pv);
+  return{lots,unitNote:CURSYM+(pv*lots).toFixed(2)+' per 1.0 move · stop '+stop+' · point value '+pv+'/lot'};
 }
 
 let formPlan=null;
-function blankPlan(){return{symbol:INSTRUMENTS[0]||'',dir:'buy',entry:null,sl:null,tp:null,setups:[],session:'London',plannedR:null,riskUSD:5,note:''};}
+function blankPlan(){return{symbol:INSTRUMENTS[0]||'',dir:'buy',entry:null,sl:null,tp:null,setups:[],session:'London',plannedR:null,riskUSD:RULES.maxRisk,note:''};}
 function renderPlan(){
   const root=$('#page-plan');root.innerHTML='';
+  if(!INSTRUMENTS.length){
+    root.append(el('div',{class:'note',style:'margin-bottom:14px'},'No instruments yet — import an MT5 statement, or list what you trade under Import → Your trading rules, and the planner, watchlist and calculator will pick them up.'));
+  }
   if(!formPlan)formPlan=blankPlan();
+  if(!formPlan.symbol&&INSTRUMENTS.length)formPlan.symbol=INSTRUMENTS[0];
 
   /* ---- pre-trade plan builder ---- */
   root.append(el('div',{class:'eyebrow'},'Pre-trade plan — log the trade before you take it'));
@@ -1840,7 +1858,7 @@ function renderPlan(){
   const r3=el('div',{class:'row',style:'margin-bottom:12px'});
   r3.append(
     wrapFld('Planned R',el('input',{type:'number',step:'0.1',value:formPlan.plannedR??'',oninput:e=>formPlan.plannedR=e.target.value===''?null:+e.target.value})),
-    wrapFld('$ risk',el('input',{type:'number',step:'0.01',value:formPlan.riskUSD??'',oninput:e=>formPlan.riskUSD=e.target.value===''?null:+e.target.value}))
+    wrapFld('Risk ('+CURSYM.trim()+')',el('input',{type:'number',step:'0.01',value:formPlan.riskUSD??'',oninput:e=>formPlan.riskUSD=e.target.value===''?null:+e.target.value}))
   );
   form.append(r3);
   form.append(el('label',{class:'fld'},'Setups'));
@@ -1936,16 +1954,18 @@ function renderPlan(){
   /* ---- position size calculator ---- */
   root.append(el('h2',{class:'sec'},'Position size'));
   const calc=el('div',{class:'panel'});
-  const cstate={symbol:INSTRUMENTS[0]||'',risk:RULES.maxRisk,stop:null,usdjpy:STATE.settings.usdjpy||null};
+  const pvStore=STATE.settings.pointValues||(STATE.settings.pointValues={});
+  const cstate={symbol:INSTRUMENTS[0]||'',risk:RULES.maxRisk,stop:null,usdjpy:STATE.settings.usdjpy||null,
+    get pointValue(){return pvStore[this.symbol]??pointValuePerLot(this.symbol);}};
   const out=el('div',{style:'margin-top:6px'});
   function recalc(){
     out.innerHTML='';
     const isJpy=/JPY/i.test(cstate.symbol);
-    const r=calcLots(cstate.symbol,cstate.risk,cstate.stop,cstate.usdjpy);
-    if(!r){out.append(el('div',{class:'faint',style:'font-size:12px'},'Enter $ risk and stop distance.'));return;}
+    const r=calcLots(cstate.symbol,cstate.risk,cstate.stop,cstate.usdjpy,cstate.pointValue);
+    if(!r){out.append(el('div',{class:'faint',style:'font-size:12px'},'Enter risk and stop distance.'));return;}
     if(r.err){out.append(el('div',{class:'warn'},r.err));return;}
     out.append(el('div',{class:'calc-out'},fmt(r.lots,2)+' lots'),el('div',{class:'meta',style:'margin-top:4px'},r.unitNote));
-    if(r.lots<0.01)out.append(el('div',{class:'note',style:'margin-top:8px'},'That\'s below 0.01 lots — your stop is wide for a $'+cstate.risk+' risk. Tighten the stop or accept a smaller position.'));
+    if(r.lots<0.01)out.append(el('div',{class:'note',style:'margin-top:8px'},'That\'s below 0.01 lots — your stop is wide for a '+amt(cstate.risk)+' risk. Tighten the stop or accept a smaller position.'));
   }
   const cr=el('div',{class:'row'});
   const cSym=el('select',{onchange:e=>{cstate.symbol=e.target.value;renderPlanCalcStop();recalc();}});INSTRUMENTS.forEach(s=>cSym.append(el('option',{value:s,selected:cstate.symbol===s?'':null},s)));
@@ -1954,14 +1974,15 @@ function renderPlan(){
   const jpyWrap=el('div');
   function renderPlanCalcStop(){
     const isJpy=/JPY/i.test(cstate.symbol);
-    stopWrap.innerHTML='';stopWrap.append(el('label',{class:'fld'},isJpy?'Stop (pips)':'Stop ($ move)'),el('input',{type:'number',step:isJpy?'1':'0.1',value:cstate.stop??'',placeholder:isJpy?'e.g. 12':'e.g. 5.0',oninput:e=>{cstate.stop=e.target.value===''?null:+e.target.value;recalc();}}));
+    stopWrap.innerHTML='';stopWrap.append(el('label',{class:'fld'},isJpy?'Stop (pips)':'Stop (price move)'),el('input',{type:'number',step:isJpy?'1':'0.1',value:cstate.stop??'',placeholder:isJpy?'e.g. 12':'e.g. 5.0',oninput:e=>{cstate.stop=e.target.value===''?null:+e.target.value;recalc();}}));
     jpyWrap.innerHTML='';
     if(isJpy)jpyWrap.append(el('label',{class:'fld'},'USDJPY rate'),el('input',{type:'number',step:'0.01',value:cstate.usdjpy??'',placeholder:'e.g. 190.50',oninput:e=>{cstate.usdjpy=e.target.value===''?null:+e.target.value;STATE.settings.usdjpy=cstate.usdjpy;saveSettings();recalc();}}));
+    else jpyWrap.append(el('label',{class:'fld'},'Point value / lot'),el('input',{type:'number',step:'any',value:cstate.pointValue??'',placeholder:'100000 FX · 100 gold · see broker specs',oninput:e=>{const v=e.target.value===''?null:+e.target.value;if(v>0)pvStore[cstate.symbol]=v;else delete pvStore[cstate.symbol];saveSettings();recalc();}}));
   }
   renderPlanCalcStop();
-  cr.append(wrapFld('Symbol',cSym),wrapFld('$ risk',cRisk),stopWrap,jpyWrap);
+  cr.append(wrapFld('Symbol',cSym),wrapFld('Risk ('+CURSYM.trim()+')',cRisk),stopWrap,jpyWrap);
   calc.append(cr,out);
-  calc.append(el('div',{class:'note',style:'margin-top:12px'},'Lots are in the same units your MT5 statement reports. Metals: 1.0 lot of gold ≈ 100 currency units per 1.00 move. For JPY-quoted pairs the pip value depends on the USD/JPY rate, so enter the live rate. Instruments with wider stops and spreads need smaller size — the per-trade cap of '+amt(RULES.maxRisk)+' stays the same for all of them.'));
+  calc.append(el('div',{class:'note',style:'margin-top:12px'},'Point value is what a 1.0 price move on 1.0 lot is worth: 100,000 for USD-quoted FX pairs, 100 for gold — for indices and other CFDs check your broker\'s contract specs, then it\'s remembered per symbol. Values assume a USD-quoted account; if yours isn\'t, treat the result as approximate. The per-trade cap of '+amt(RULES.maxRisk)+' stays the same for every instrument.'));
   root.append(calc);
   recalc();
 }
@@ -2105,7 +2126,12 @@ async function importBackup(file){
   try{
     const text=await file.text();const p=JSON.parse(text);
     if(p.app!=='Aether')if(!confirm('This doesn\'t look like an Aether backup. Continue anyway?'))return;
-    if(p.settings){STATE.settings=Object.assign({},DEFAULT_SETTINGS,p.settings);await saveSettings();}
+    if(p.settings){
+      // Only adopt keys this app actually has. Backups from older builds carry
+      // dead keys (sync URLs, API keys) that must not be persisted here.
+      const clean={};for(const k in DEFAULT_SETTINGS)if(k in p.settings)clean[k]=p.settings[k];
+      STATE.settings=Object.assign({},DEFAULT_SETTINGS,clean);await saveSettings();
+    }
     for(const t of(p.trades||[]))await idbPut('trades',t);
     for(const d of(p.debriefs||[]))await idbPut('debriefs',d);
     for(const lt of(p.livetrades||[]))await idbPut('livetrades',lt);
