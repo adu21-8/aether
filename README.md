@@ -46,7 +46,7 @@ python3 -m http.server 8655
 Then open `http://localhost:8655`. To deploy, upload the folder to any static
 host.
 
-          **OR**
+  **OR**
 
 Use the web app version at : https://aether-trade.netlify.app/
 
