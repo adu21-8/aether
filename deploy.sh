@@ -1,40 +1,63 @@
 #!/usr/bin/env bash
 # Deploy Aether to Netlify.
 #
-# Uses a per-command auth token so it never touches (or is affected by) whatever
-# account the Netlify CLI is globally logged into. Put the token for the account
-# that owns this site in ~/.netlify-aether-token — never in this file, and never
-# in the repo.
+#   ./deploy.sh              deploy to production
+#   ./deploy.sh --draft      deploy a preview URL without touching production
 #
-#   chmod 600 ~/.netlify-aether-token
-#   ./deploy.sh            # deploy to production
+# The site lives on a different Netlify account from the default one this
+# machine is logged into, so the script switches accounts for the deploy and
+# switches back afterwards — including on failure or Ctrl-C. Both accounts come
+# from `netlify login`; no token file is involved.
 #
+# One-time setup, if `netlify switch` doesn't list the owning account:
+#   netlify login       # authorise the account that owns the site
 set -euo pipefail
 
-TOKEN_FILE="${NETLIFY_TOKEN_FILE:-$HOME/.netlify-aether-token}"
-SITE_NAME="${SITE_NAME:-aether-trade}"
+SITE_ID="${SITE_ID:-851a48f3-af7f-41e1-a613-56d6c6ab9edc}"   # aether-trade
+DEPLOY_ACCOUNT="${DEPLOY_ACCOUNT:-morayyan.abbasx@outlook.com}"
+DEFAULT_ACCOUNT="${DEFAULT_ACCOUNT:-morayyan.abbasx@gmail.com}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Exactly what becomes public. Anything not listed here — README.md, this
+# script, .claude/ — stays off the site.
+FILES=(index.html manifest.webmanifest sw.js icon.svg icon-192.png icon-512.png apple-touch-icon.png)
+
+PROD=1
+[[ "${1:-}" == "--draft" ]] && PROD=0
+
+command -v netlify >/dev/null || { echo "netlify CLI not found: npm i -g netlify-cli" >&2; exit 1; }
+
 STAGE="$(mktemp -d)"
-trap 'rm -rf "$STAGE"' EXIT
+SWITCHED=0
+cleanup(){
+  rm -rf "$STAGE"
+  # always hand the CLI back, even if the deploy died halfway
+  if (( SWITCHED )); then netlify switch --email "$DEFAULT_ACCOUNT" >/dev/null 2>&1 || true; fi
+}
+trap cleanup EXIT
 
-if [[ ! -f "$TOKEN_FILE" ]]; then
-  echo "No token at $TOKEN_FILE" >&2
-  echo "Create one: Netlify → User settings → Applications → Personal access tokens" >&2
-  exit 1
-fi
-TOKEN="$(tr -d '[:space:]' < "$TOKEN_FILE")"
-
-# Only the app ships. No source notes, no editor config, no deploy tooling.
-for f in index.html manifest.webmanifest sw.js icon.svg icon-192.png icon-512.png apple-touch-icon.png; do
+for f in "${FILES[@]}"; do
+  [[ -f "$ROOT/$f" ]] || { echo "Missing $f — refusing to deploy a partial site." >&2; exit 1; }
   cp "$ROOT/$f" "$STAGE/"
 done
 
-echo "Deploying $(ls -1 "$STAGE" | wc -l | tr -d ' ') files to '$SITE_NAME'…"
+# Refuse to publish a build carrying a secret.
+if grep -rqE 'gsk_[A-Za-z0-9]{20}|sk-ant-[A-Za-z0-9]{20}|nfp_[A-Za-z0-9]{20}' "$STAGE"; then
+  echo "Aborting: an API key or token is present in the files to be deployed." >&2
+  exit 1
+fi
 
-if netlify api getSite --auth "$TOKEN" --data "{\"site_id\":\"$SITE_NAME.netlify.app\"}" >/dev/null 2>&1; then
-  netlify deploy --prod --dir "$STAGE" --site "$SITE_NAME" --auth "$TOKEN"
+if netlify switch --email "$DEPLOY_ACCOUNT" >/dev/null 2>&1; then
+  SWITCHED=1
 else
-  echo "Site not found — creating it."
-  netlify sites:create --name "$SITE_NAME" --auth "$TOKEN" || true
-  netlify deploy --prod --dir "$STAGE" --site "$SITE_NAME" --auth "$TOKEN"
+  echo "Could not switch to $DEPLOY_ACCOUNT. Run 'netlify login' to authorise it." >&2
+  exit 1
+fi
+
+echo "Deploying ${#FILES[@]} files as $DEPLOY_ACCOUNT$( ((PROD)) || echo ' (draft)' )…"
+
+if ((PROD)); then
+  netlify deploy --prod --dir "$STAGE" --site "$SITE_ID" --message "${*:-manual deploy}"
+else
+  netlify deploy --dir "$STAGE" --site "$SITE_ID" --message "draft"
 fi
