@@ -1,0 +1,16 @@
+{
+  "name": "Aether — Trading Journal",
+  "short_name": "Aether",
+  "description": "Offline MT5 trading journal. Import your statement, tag your setups, and hold yourself to your own risk rules. Your data never leaves your device.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,11 @@
+# Local tooling / editor state
+.claude/
+.netlify/
+.DS_Store
+
+# Never commit deploy credentials. deploy.sh reads the token from a file
+# outside the repo (~/.netlify-aether-token) — keep it that way.
+*.token
+.netlify-*-token
+.env
+.env.*
