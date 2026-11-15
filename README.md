@@ -24,16 +24,24 @@ the URL is https://aether-trade.netlify.app/
   Toolbox → History → right-click → Report). Handles UTF-16 exports.
 - **Rule engine** — you define your risk model (per-trade cap, daily and weekly
   loss caps, profit scaling, forced break after a stopout). Every trade is
-  judged against it and flagged when it breaks one.
-- **Analytics** — equity curve, discipline-adjusted curve (what your account
-  would look like if every rule-breaking trade were skipped), R-multiple
-  distribution, weekday × hour heatmap, drawdown episodes, per-setup and
-  per-emotion performance, day-quality stats.
+  judged against it and flagged when it breaks one. A status banner tells you
+  whether you're clear to trade, how much loss room is left, and counts down
+  the cooldown after a stopout.
+- **Dashboard** — today, this week and this month at a glance, plus an equity
+  curve that shows what following your rules is worth against what breaking
+  them has cost.
+- **Insights** — R-multiple distribution, per-instrument and per-setup
+  performance, rules followed vs broken, revenge trades, drawdown episodes,
+  a weekday × hour heatmap and day-quality stats.
 - **Trade log** — tag setups, emotion, screenshots and notes per trade.
-- **Plan & tools** — pre-trade plans you can link to the trade that resulted,
-  a watchlist, position-size calculator, and key levels per instrument.
+- **Plan & Tools** — a position-size calculator, pre-trade plans you can link
+  to the trade that resulted, and a watchlist.
+- **Rules & Levels** — edit your risk rules and keep key levels per instrument.
 - **Daily journal** — write a reflection each day; simple markdown supported.
-- **Checklist** — live pooled status against your caps, plus a pre-trade check.
+- **Checklist** — live status against your caps, plus a pre-trade check you
+  tick through before you enter.
+- **Works on your phone** — a bottom tab bar, a trade list built for small
+  screens, and a trade detail sheet you can swipe away.
 - **Sample data** — no statement handy? Load a fabricated account (six weeks of
   trades, a rule-breaking day, plans and a journal entry) and explore every
   page. One click removes it, and importing a real statement clears it too.
@@ -55,14 +63,18 @@ host.
 
 Use the web app version at : https://aether-trade.netlify.app/
 
-First run: go to **Import → Your trading rules** and set your caps and setups.
-They default to a small-account model; they are meant to be changed. Then import
-your statement from the **Import** tab.
+First run: go to **Rules & Levels** and set your caps and setups. They default
+to a small-account model; they are meant to be changed. Then import your
+statement from **Data & Settings**.
+
+Or grab the latest download from
+[Releases](https://github.com/adu21-8/aether/releases), unzip it, and serve the
+folder the same way.
 
 ## Notes
 
 - **Your data is only in this browser.** Clearing site data erases it. Use
-  *Export full backup* from the Import tab regularly — Aether reminds you every
+  *Export full backup* from **Data & Settings** regularly — Aether reminds you every
   few imports if you haven't.
 - Instruments are discovered from what you import — you don't configure them,
   though you can list extras up front before your first import.
@@ -78,6 +90,7 @@ your statement from the **Import** tab.
 | `sw.js` | Service worker, caches the app shell for offline use |
 | `manifest.webmanifest` | PWA metadata |
 | `icon*.png`, `icon.svg` | App icons |
+| `deploy.sh` | Deploys the site to Netlify |
 
 ## Not included
 
