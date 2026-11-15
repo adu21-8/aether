@@ -96,3 +96,7 @@ folder the same way.
 
 No AI coaching, no cloud sync, no accounts. Aether records what you did and
 measures it against your own rules — it does not tell you what to trade.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
