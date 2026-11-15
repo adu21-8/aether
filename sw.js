@@ -1,7 +1,7 @@
 /* Aether service worker — caches the single-file app shell for offline use.
    The app makes no network calls of its own: everything lives in IndexedDB on
    this device, so once the shell is cached it works fully offline. */
-const CACHE = 'aether-v8';
+const CACHE = 'aether-v9';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

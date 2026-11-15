@@ -14,6 +14,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Aether">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Aether — Trading Journal</title>
 <style>
@@ -58,7 +60,6 @@ a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
 .brand{padding:0 18px 0 0;border-bottom:0;border-right:1px solid var(--line);margin-right:4px;align-self:stretch;display:flex;align-items:center}
 .brand .logo{font-size:.875rem;font-weight:600;letter-spacing:.32em;text-transform:uppercase}
 .brand .logo b{color:inherit;font-weight:600}
-.brand .tag{display:none}
 nav{display:flex;flex:1;padding:0;overflow-x:auto;gap:2px;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 .navbtn{display:flex;align-items:center;width:auto;flex:none;white-space:nowrap;text-align:left;background:none;border:0;color:var(--muted);padding:16px 13px 14px;font-size:.8125rem;font-weight:500;border-left:0;border-bottom:2px solid transparent;transition:color var(--dur),border-color var(--dur)}
@@ -91,29 +92,51 @@ header .spacer{flex:1}
 .subtabs button.on:hover{background:var(--text)}
 .tabbody.fadein{animation:fadeIn var(--dur-pg) var(--ease)}
 
-/* performance hero */
-.hero{position:relative;border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 30px;margin-bottom:16px;background:var(--panel)}
-.hero .pnllabel{font-size:.625rem;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:14px}
-.hero .pnl{font-family:var(--mono);font-size:3.625rem;font-weight:600;letter-spacing:-.04em;line-height:.95}
-.hero .mini{display:flex;gap:38px;flex-wrap:wrap;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
-.hero .mini .m .k{font-size:.59375rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600}
-.hero .mini .m .v{font-family:var(--mono);font-size:1.375rem;font-weight:600;margin-top:6px;letter-spacing:-.01em}
-@media(max-width:600px){.hero{padding:20px}.hero .pnl{font-size:2.5rem}.hero .mini{gap:22px}}
+/* ---------- Dashboard › Performance: the page's hero ---------- */
+.perf{position:relative;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px 20px;margin-bottom:16px;background:var(--panel)}
+.perfhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.perfttl{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.005em}
+.perfhead .rangebtns{margin-left:auto}
+.perf>.k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.perfnum{font-size:3.25rem;line-height:1;margin-top:10px}
+.discline{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.8125rem;color:var(--muted);margin:12px 0 18px;line-height:1.5}
+.discline b{font-family:var(--mono);font-weight:600}
+.discline .sep{color:var(--faint)}
+.chartwrap{position:relative}
+.perf .legend{margin-top:10px}
+.perf .figrow{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.legend i.dash{width:14px;height:0;border-radius:0;border-top:2px dashed;background:none!important}
+.dashfoot{margin-top:18px}
+@media(max-width:600px){.perf{padding:18px 16px 16px}.perfnum{font-size:2.5rem}.perf .figrow{gap:14px 26px}}
 
 /* ---------- Bits ---------- */
-.eyebrow{font-size:.625rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;font-weight:600}
-h2.sec{font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;margin:42px 0 16px;font-weight:600;color:var(--faint);display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+/* Type roles: page title (header .ttl) › section heading (h2.sec) › card micro-label (.k) › form label (.fld) › caption (.cap) */
+.eyebrow{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;font-weight:600}
+h2.sec{font-size:1.0625rem;letter-spacing:-.005em;margin:40px 0 14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:12px;line-height:1.3}
 h2.sec::before{content:none}
 h2.sec:first-child{margin-top:0}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.cap{font-size:.75rem;color:var(--faint);line-height:1.5}
+h2.sec+.cap{margin:-8px 0 14px}
+/* Surfaces: page (--bg) › card (--panel + --line border) › inset (--panel2, no border). A card never holds a card. */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.inset{background:var(--panel2);border-radius:8px;padding:14px 16px}
 .grid{display:grid;gap:14px}
 .grid.two{grid-template-columns:1fr 1fr}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:17px 18px;transition:border-color var(--dur)}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;transition:border-color var(--dur)}
 .stat:hover{border-color:var(--border)}
-.stat .k{font-size:.59375rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.stat .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
 .stat .v{font-size:1.625rem;font-weight:600;font-family:var(--mono);margin-top:9px;letter-spacing:-.025em;line-height:1.05}
-.stat .sub{font-size:.6875rem;color:var(--muted);margin-top:4px}
+.stat .sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+/* an inline row of figures inside one card, instead of a card per figure */
+.figrow{display:flex;flex-wrap:wrap;gap:16px 36px}
+.figrow .f .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.figrow .f .v{font-family:var(--mono);font-size:1.125rem;font-weight:600;margin-top:5px;letter-spacing:-.01em}
+.figrow .f .sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+/* large display numbers: the system sans with tabular figures reads lighter than a 58px monospace */
+.display,.stat .v.display{font-family:var(--sans);font-variant-numeric:tabular-nums;letter-spacing:-.03em;font-weight:600}
+/* icons: inline SVG, sized to the text around them */
+.ic{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em}
 .pos{color:var(--win-bright)} .neg{color:var(--accent-bright)} .num{font-family:var(--mono)}
 .pill{display:inline-block;font-size:.65625rem;padding:2px 9px;border-radius:20px;border:1px solid var(--line2);color:var(--muted);background:none;font-weight:500}
 .pill.gbp{color:var(--gbp);border-color:#333c46}
@@ -126,42 +149,69 @@ h2.sec:first-child{margin-top:0}
 .tag-chip:hover{border-color:var(--border);color:var(--text)}
 .tag-chip.on{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:600}
 
-.btn{background:none;color:var(--text);border:1px solid var(--line2);border-radius:8px;padding:8px 15px;font-size:.8125rem;font-weight:500;transition:background var(--dur),border-color var(--dur),transform var(--dur)}
+/* Buttons: one white primary per view; everything else outlined or ghost. Destructive = ghost with red text. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:none;color:var(--text);border:1px solid var(--line2);border-radius:8px;padding:8px 15px;font-size:.8125rem;font-weight:500;line-height:1.35;transition:background var(--dur),border-color var(--dur),transform var(--dur)}
 .btn:hover{border-color:var(--border);background:var(--panel2)}
 .btn:active{transform:translateY(1px)}
 .btn.primary{background:var(--text);border-color:var(--text);color:var(--bg);font-weight:600}
 .btn.primary:hover{background:#fff;border-color:#fff}
 .btn.ghost{border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{color:var(--text);background:var(--panel2)}
-.btn.sm{padding:5px 11px;font-size:.75rem}
-.btn.danger{color:var(--accent-bright);border-color:#4a322f}
-.btn.danger:hover{background:#171112;border-color:#5c3f3b}
+.btn.sm{padding:5px 11px;font-size:.75rem;gap:6px}
+.btn.danger{border-color:transparent;color:var(--accent-bright)}
+.btn.danger:hover{background:#171112;border-color:transparent;color:var(--accent-bright)}
+/* square icon-only button (remove, delete) — quiet until hovered */
+.btn.icon{padding:0;width:34px;height:34px;flex:none;border-color:transparent;color:var(--faint)}
+.btn.icon:hover{color:var(--accent-bright);background:#171112;border-color:transparent}
+.btn.icon .ic{width:17px;height:17px}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--muted);font-size:.8125rem;font-weight:500;display:inline-flex;align-items:center;gap:6px;text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px;transition:color var(--dur),text-decoration-color var(--dur)}
+.linkbtn:hover{color:var(--text);text-decoration-color:var(--muted)}
 
 table{width:100%;border-collapse:collapse;font-size:.78125rem}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 th{color:var(--faint);font-size:.59375rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--panel)}
 th .arr{opacity:.5;font-size:.5625rem}
 tbody tr{transition:background var(--dur)}
+.logtable td[data-k=flags]{white-space:nowrap}
+.logtable td[data-k=flags] .pill+.pill{margin-left:4px}
+.pill.more{color:var(--faint)}
+.logtop{display:none}
+.filterbtn .count{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--text);color:var(--bg);font-size:.6875rem;font-weight:700}
+.clearf{display:flex;align-items:flex-end;padding-bottom:6px}
 tbody tr:hover{background:#151517;cursor:pointer}
 td.r,th.r{text-align:right}
 .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+/* inside a card, tables and day cards become insets */
+.chartbox .tablewrap,.panel .tablewrap{border:0;background:var(--panel2);border-radius:8px}
+.chartbox .tablewrap th,.panel .tablewrap th{background:var(--panel2)}
+.chartbox .plancard{border:0;background:var(--panel2)}
 .muted{color:var(--muted)} .faint{color:var(--faint)}
 
 .empty{text-align:center;color:var(--muted);padding:56px 22px;border:1px dashed var(--line2);border-radius:var(--r-lg)}
 .empty .big{font-size:1rem;color:var(--text);margin-bottom:7px;font-weight:600}
 
-.warn{background:#171112;border:1px solid #43302d;border-radius:var(--r);padding:12px 15px;color:#d6b0aa;font-size:.78125rem;line-height:1.55}
-.note{background:#131316;border:1px solid var(--line);border-radius:var(--r);padding:12px 15px;color:var(--muted);font-size:.78125rem;line-height:1.6}
+/* notes and warnings are insets: tinted fill, no border, so they can sit inside a card */
+.warn{background:#1a1213;border-radius:8px;padding:12px 15px;color:#d6b0aa;font-size:.8125rem;line-height:1.55}
+.note{background:var(--panel2);border-radius:8px;padding:12px 15px;color:var(--muted);font-size:.8125rem;line-height:1.6}
 
-input[type=text],input[type=number],input[type=date],select,textarea{
+input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{
   background:#0d0d0f;color:var(--text);border:1px solid var(--line2);border-radius:8px;padding:9px 12px;width:100%;transition:border-color var(--dur)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--border)}
 textarea{resize:vertical;min-height:64px;line-height:1.6}
-label.fld{display:block;font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0 0 7px;font-weight:600}
-.fld-amber input{border-color:#4d4630;background:#141209}
-.fld-amber label.fld{color:var(--amber)}
-.row{display:flex;gap:12px;flex-wrap:wrap}
-.row>div{flex:1;min-width:130px}
+label.fld,.fld{display:block;font-size:.75rem;letter-spacing:0;color:var(--muted);margin:0 0 6px;font-weight:500}
+.help{font-size:.75rem;color:var(--faint);margin-top:6px;line-height:1.45}
+.row{display:flex;gap:12px 14px;flex-wrap:wrap}
+.row>div{flex:0 1 200px;min-width:120px}
+.row>div.wide{flex:1 1 280px}
+.rulegrp{padding:18px 0;border-top:1px solid var(--line)}
+.rulegrp:first-child{padding-top:2px;border-top:0}
+.rulegrp>.k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:12px}
+.rulefields{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px 24px}
+.rulefld input[type=number]{max-width:160px}
+.rulefld.wide input{max-width:560px}
+.rulesave{padding-top:18px;border-top:1px solid var(--line)}
+.dropzone{display:flex;align-items:center;justify-content:center;gap:10px}
+.dropzone .ic{width:20px;height:20px}
 
 .dropzone{border:1px dashed var(--line2);border-radius:var(--r);padding:28px;text-align:center;color:var(--faint);background:none;font-size:.8125rem;transition:border-color var(--dur),color var(--dur),background var(--dur)}
 .dropzone:hover{border-color:var(--border);color:var(--muted)}
@@ -182,6 +232,7 @@ label.fld{display:block;font-size:.625rem;letter-spacing:.08em;text-transform:up
 .modal .mhead{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);border-radius:var(--r-lg) var(--r-lg) 0 0;z-index:1}
 .modal .mhead h3{margin:0;font-size:.9375rem;font-weight:600}
 .modal .mbody{padding:22px}
+.modal .mfoot{position:sticky;bottom:0;z-index:1;display:flex;gap:10px;align-items:center;padding:14px 22px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--panel);border-radius:0 0 var(--r-lg) var(--r-lg)}
 .closeX{margin-left:auto;background:none;border:0;color:var(--faint);font-size:1.375rem;line-height:1;transition:color var(--dur)}
 .closeX:hover{color:var(--text)}
 .shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:10px}
@@ -193,7 +244,7 @@ label.fld{display:block;font-size:.625rem;letter-spacing:.08em;text-transform:up
 canvas{display:block;width:100%;touch-action:pan-y}
 .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;position:relative}
 .chartbox h4{margin:0 0 4px;font-size:.8125rem;font-weight:600;letter-spacing:.01em}
-.chartbox .cap{font-size:.6875rem;color:var(--faint);margin-bottom:14px}
+.chartbox .cap{font-size:.75rem;color:var(--faint);margin-bottom:14px}
 .legend{display:flex;gap:14px;font-size:.6875rem;color:var(--muted);margin-top:12px;flex-wrap:wrap}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .charttip{position:absolute;pointer-events:none;background:#0d0d0f;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;font-size:.71875rem;font-family:var(--mono);color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:5;white-space:nowrap;transform:translate(-50%,-118%);opacity:0;transition:opacity .12s}
@@ -204,28 +255,13 @@ canvas{display:block;width:100%;touch-action:pan-y}
 .rangebtns button:hover{color:var(--text)}
 .rangebtns button.on{background:var(--text);color:var(--bg)}
 
-.insight{display:flex;gap:13px;padding:14px 16px;border:1px solid var(--line);border-left:2px solid var(--border);border-radius:var(--r);background:var(--panel);margin-bottom:10px}
-.insight.good{border-left-color:var(--win)}
-.insight .mk{font-family:var(--mono);font-weight:600;font-size:1rem;color:var(--muted);min-width:20px;line-height:1.4}
-.insight.good .mk{color:var(--win-bright)}
-.insight p{margin:0;font-size:.8125rem;line-height:1.6}
-.insight .lab{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px;font-weight:600}
-.insight .act{display:flex;gap:7px;margin-top:8px;font-size:.78125rem;color:var(--text);align-items:baseline}
-.insight .act b{color:var(--muted);font-weight:600;flex-shrink:0}
-.insight.good .act b{color:var(--win-bright)}
 
-/* day-ahead */
-.dayahead{border:1px solid var(--line);border-left:2px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:20px;background:var(--panel)}
-.dayahead .doline{display:flex;gap:9px;font-size:.8125rem;margin-bottom:7px;align-items:baseline}
-.dayahead .doline .ar{color:var(--muted);font-weight:600;flex-shrink:0}
 
 /* daily debrief */
 .debrief{border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px;background:var(--panel)}
-.debrief .dbhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-.debrief .dbtitle{margin:0;font-size:1.1875rem;letter-spacing:.01em;font-family:var(--mono)}
 .dbtrades{display:flex;flex-direction:column;gap:6px;margin:11px 0 2px}
-.dbtrade{display:flex;align-items:center;gap:10px;font-size:.78125rem;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#131316}
-.debrief-card{border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;background:#131316}
+.dbtrade{display:flex;align-items:center;gap:10px;font-size:.78125rem;padding:8px 12px;border-radius:8px;background:var(--panel2)}
+.debrief-card{border-radius:8px;padding:16px 18px;background:var(--panel2)}
 .md h4.mdh{margin:16px 0 7px;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;border:0;padding:0;display:block}
 .md h4.mdh::before{content:none}
 .md h4.mdh:first-child{margin-top:0}
@@ -236,29 +272,70 @@ canvas{display:block;width:100%;touch-action:pan-y}
 .debrief.collapsible{padding:0;overflow:hidden}
 .dbhead-row{display:flex;align-items:center;gap:11px;padding:15px 20px;cursor:pointer;transition:background var(--dur) var(--ease)}
 .dbhead-row:hover{background:rgba(255,255,255,.025)}
-.dbhead-row .chev{color:var(--faint);font-size:.6875rem;width:12px;flex-shrink:0}
+.dbhead-row .chev{color:var(--faint);width:16px;height:16px;flex-shrink:0;display:grid;place-items:center}
+.dbhead-row .chev .ic{width:16px;height:16px;transition:transform .32s var(--spring)}
+.dbhead-row[aria-expanded=true] .chev .ic{transform:rotate(90deg)}
+.dbttl{font-size:.9375rem;font-weight:600;color:var(--text)}
 .dbbody{padding:0 20px 18px}
 
-.zone{border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;margin-top:10px;background:var(--panel)}
+.zone{margin-top:10px}
 .zone>h2.sec:first-child{margin-top:0}
 
-.check{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:9px;background:var(--panel);transition:border-color var(--dur)}
-.check input{margin-top:3px;width:auto}
-.check .ttl{font-weight:600;font-size:.84375rem}
-.check .desc{font-size:.75rem;color:var(--muted);margin-top:3px;line-height:1.5}
-.check.auto-ok{border-color:#2c4638}
-.check.auto-bad{border-color:#4a322f;background:#151011}
+.ckhead{display:flex;align-items:center;gap:12px;margin:-4px 0 8px}
+.ckprog{flex:1;font-size:.8125rem;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ckprog b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.ckprog.ready,.ckprog.ready b{color:var(--win-bright)}
+.ckprog.blocked b{color:var(--accent-bright)}
+.ckprog .ic{width:18px;height:18px}
+.ckmeter{height:4px;border-radius:2px;background:var(--panel2);overflow:hidden;margin-bottom:16px}
+.ckmeter i{display:block;height:100%;width:0;background:var(--muted);border-radius:2px;transition:width .3s var(--ease),background var(--dur)}
+.ckmeter.ready i{background:var(--win-bright)}
+.cklist{padding:4px 0}
+.ckgrp{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:12px 18px 6px}
+.fact,.tick{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--line)}
+.ckgrp+.fact,.ckgrp+.tick{border-top:0}
+.fact .ttl,.tick .ttl{font-weight:600;font-size:.875rem}
+.fact .desc,.tick .desc{font-size:.75rem;color:var(--muted);margin-top:2px;line-height:1.5}
+.fact .fic{line-height:0;flex:none;align-self:flex-start;margin-top:1px}
+.fact .fic .ic{width:22px;height:22px}
+.fact.ok .fic{color:var(--win-bright)}
+.fact.bad .fic{color:var(--accent-bright)}
+.fact.bad .ttl{color:#e0b6b0}
+.tick{position:relative;min-height:56px;cursor:pointer;-webkit-user-select:none;user-select:none;transition:background var(--dur)}
+.tick:hover{background:rgba(255,255,255,.02)}
+.tick:active{background:var(--panel2);transition-duration:0s}
+.tick input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.tickmark{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:transparent;transition:background var(--dur),border-color var(--dur),color var(--dur)}
+.tickmark .ic{width:14px;height:14px;stroke-width:2.6}
+.tick input:checked+.tickmark{background:var(--win-bright);border-color:var(--win-bright);color:var(--bg)}
+.tick:has(input:focus-visible){outline:2px solid var(--muted);outline-offset:-2px;border-radius:8px}
 
 .kv{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.78125rem}
 .kv:last-child{border-bottom:0}
 .kv .k{color:var(--muted);flex:none}
 .kv .v{font-family:var(--mono);text-align:right;min-width:0;overflow-wrap:anywhere}
 
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.compare .col{padding:15px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
-.compare .col.clean{border-color:#2c4638}
-.compare .col.broken{border-color:#4a322f}
-.compare h4{margin:0 0 10px;font-size:.8125rem;font-weight:600}
+/* ---------- Insights ---------- */
+.ovcards{grid-template-columns:1.5fr repeat(3,1fr)}
+.stat.lead .v{font-size:2.25rem;line-height:1}
+@media(max-width:860px){.ovcards{grid-template-columns:1fr 1fr}.ovcards .stat.lead{grid-column:1/-1}}
+.disc{margin-bottom:14px}
+.discttl{margin:0 0 4px;font-size:1.0625rem;font-weight:600;color:var(--text);line-height:1.35}
+.disc.lead .discttl{font-size:1.375rem;letter-spacing:-.015em}
+.cmpbars{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.cmprow{display:grid;grid-template-columns:minmax(120px,170px) 1fr 90px minmax(180px,auto);gap:6px 16px;align-items:center}
+.clab{font-size:.8125rem;font-weight:500}
+.ctrack{position:relative;height:14px;border-radius:4px;background:var(--panel2)}
+.cfill{position:absolute;top:0;bottom:0;border-radius:4px;transition:width .4s var(--ease),left .4s var(--ease)}
+.cfill.up{background:var(--win)}
+.cfill.down{background:var(--accent)}
+.czero{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--border)}
+.cval{text-align:right;font-weight:600;font-size:.875rem}
+.cmeta{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:760px){
+  .cmprow{grid-template-columns:1fr auto;grid-template-areas:"lab val" "bar bar" "meta meta";gap:6px 12px}
+  .clab{grid-area:lab}.cval{grid-area:val}.ctrack{grid-area:bar}.cmeta{grid-area:meta}
+}
 
 .levelrow{display:flex;gap:8px;margin-bottom:7px;align-items:center}
 .levelrow input{flex:1}
@@ -266,6 +343,7 @@ canvas{display:block;width:100%;touch-action:pan-y}
 
 #toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px) scale(.97);background:rgba(22,22,25,.8);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line2);border-top-color:rgba(255,255,255,.13);border-left:2px solid var(--muted);color:var(--text);padding:12px 18px;border-radius:var(--r);font-size:.8125rem;z-index:80;opacity:0;transition:opacity var(--dur-pg) var(--ease),transform .4s var(--spring);pointer-events:none;box-shadow:0 10px 32px rgba(0,0,0,.5);max-width:90vw}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+#toast .tic{margin-right:8px}
 #toast.good{border-left-color:var(--win-bright)}
 #toast.bad{border-left-color:var(--accent-bright);color:#d6b0aa}
 
@@ -275,14 +353,16 @@ canvas{display:block;width:100%;touch-action:pan-y}
 .barrow .fill{position:absolute;top:0;bottom:0;border-radius:4px;transition:width .4s var(--ease)}
 .barrow .val{text-align:right;font-family:var(--mono)}
 
-.menutoggle{display:none!important}
 
 /* ---------- Period strip ---------- */
-.periodgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin-bottom:16px}
+.periodgrid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.pcard.lead{padding:18px 20px}
+.pcard.lead .v{font-size:2.125rem}
+@media(max-width:860px){.periodgrid{grid-template-columns:1fr 1fr}.periodgrid .pcard.lead{grid-column:1/-1}}
 .pcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;position:relative;transition:border-color var(--dur)}
 .pcard:hover{border-color:var(--border)}
-.pcard .k{font-size:.59375rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600}
-.pcard .v{font-family:var(--mono);font-size:1.5625rem;font-weight:600;letter-spacing:-.02em;margin-top:9px;line-height:1}
+.pcard .k{font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.pcard .v{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:1.75rem;font-weight:600;letter-spacing:-.03em;margin-top:10px;line-height:1}
 .pcard .sub{font-size:.6875rem;color:var(--muted);margin-top:5px}
 .pcard .delta{font-size:.6875rem;font-family:var(--mono);font-weight:500;margin-top:4px}
 .gauge{margin-top:11px}
@@ -297,26 +377,40 @@ canvas{display:block;width:100%;touch-action:pan-y}
 /* ---------- Lock banner ---------- */
 #lockBanner{margin-bottom:18px}
 #lockBanner:empty{display:none}
-.lockbar{border-radius:var(--r);padding:14px 17px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:.84375rem}
+.lockbar{border-radius:var(--r);padding:14px 17px;display:flex;align-items:flex-start;gap:12px;font-size:.84375rem;line-height:1.5}
 .lockbar.stop{background:#171112;border:1px solid #4c332f;color:#d6a8a1}
 .lockbar.cool{background:#16130c;border:1px solid #46402c;color:#cfc19a}
 .lockbar.ok{background:#0f1512;border:1px solid #2c4638;color:#a8c9b6}
-.lockbar .big{font-weight:600;font-size:.90625rem;letter-spacing:.01em}
-.lockbar .cd{font-family:var(--mono);font-size:1.125rem;font-weight:600}
-.lockbar .sep{opacity:.4}
-.lockbar .spacer{flex:1}
-.streakchip{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;background:none;border:1px solid var(--line2);border-radius:20px;padding:4px 12px;color:var(--muted)}
-.streakchip b{font-family:var(--mono);font-size:.875rem;color:var(--text)}
-.streakchip .fire{color:var(--win-bright)}
+.lockbar .lbic{line-height:0;flex:none;margin-top:1px}
+.lockbar .lbic .ic{width:20px;height:20px}
+.lockbar .lbtext{flex:1;min-width:0}
+.lockbar .big{font-weight:600;font-size:.9375rem;letter-spacing:.005em;color:inherit}
+.lockbar.ok .big{color:var(--win-bright)}
+.lockbar .cd{font-family:var(--mono);font-size:1.0625rem;font-weight:600;white-space:nowrap}
+.streakchip{display:inline-flex;align-items:center;gap:7px;flex:none;font-size:.75rem;background:none;border:1px solid var(--line2);border-radius:20px;padding:3px 11px;color:var(--muted);white-space:nowrap}
+.streakchip b{font-family:var(--mono);font-size:.8125rem;color:var(--text)}
+.streakchip .sdot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--faint)}
+.streakchip .sdot.on{background:var(--win-bright);border-color:var(--win-bright)}
+/* compact status in the header row: a dot and a short label, tap for the checklist */
+.statuspill{position:relative;display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 10px;border-radius:15px;border:1px solid var(--line2);background:none;color:var(--muted);font-size:.75rem;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;transition:border-color var(--dur),background var(--dur),color var(--dur)}
+.statuspill[hidden]{display:none}
+.statuspill::before{content:"";position:absolute;inset:-7px -2px}   /* a 44px touch target without a 44px pill */
+.statuspill:hover{background:var(--panel2);color:var(--text)}
+.statuspill .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--win-bright)}
+.statuspill.ok{border-color:#2c4638}
+.statuspill.cool{border-color:#46402c;color:#cfc19a}.statuspill.cool .dot{background:var(--amber)}
+.statuspill.stop{border-color:#4c332f;color:#d6a8a1}.statuspill.stop .dot{background:var(--accent-bright)}
 
 /* ---------- Calendar ---------- */
 .calhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .calhead .mname{font-weight:600;font-size:.875rem;min-width:140px;text-align:center}
 .calgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .calgrid .dow{font-size:.59375rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:center;padding:2px 0;font-weight:600}
-.calcell{aspect-ratio:1/.82;border:1px solid var(--line);border-radius:8px;padding:7px;display:flex;flex-direction:column;background:#131316;min-height:46px;overflow:hidden;transition:border-color var(--dur),transform var(--dur)}
+.calcell{height:64px;border:1px solid rgba(255,255,255,.035);border-radius:8px;padding:7px 8px;display:flex;flex-direction:column;background:transparent;overflow:hidden;transition:border-color var(--dur),transform var(--dur)}
+.calcell.has{border-color:transparent}
 .calcell.empty{background:transparent;border-color:transparent}
-.calcell .dn{font-size:.6875rem;color:var(--muted)}
+.calcell .dn{font-size:.6875rem;color:var(--faint)}
+.calcell.has .dn{color:var(--muted)}
 .calcell .cp{margin-top:auto;font-family:var(--mono);font-size:.75rem;font-weight:600;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.5)}
 .calcell .ct{font-size:.5625rem;color:var(--faint)}
 .calcell.hot .dn{color:rgba(255,255,255,.92);font-weight:600}
@@ -334,9 +428,10 @@ canvas{display:block;width:100%;touch-action:pan-y}
 .heatgrid{display:grid;gap:3px;font-size:.625rem}
 .heatgrid .hh{color:var(--faint);text-align:center;font-family:var(--mono);font-size:.5625rem}
 .heatgrid .rl{color:var(--faint);font-size:.625rem;display:flex;align-items:center;padding-right:6px}
-.heatcell{height:20px;border-radius:4px;background:#161619;position:relative;transition:outline var(--dur)}
-.heatcell.win-window{box-shadow:inset 0 0 0 1px #46402c}
-.heatcell:hover{outline:1px solid var(--muted)}
+.heatcell{height:22px;border-radius:4px;background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045);position:relative}
+.heatcell.has{box-shadow:none;cursor:pointer}
+.heatcell.has:hover,.heatcell.has.sel{outline:1px solid var(--muted);outline-offset:0}
+.heathost{position:relative}
 
 /* ---------- Plan builder ---------- */
 .plancard{border:1px solid var(--line);border-radius:var(--r);padding:15px 17px;margin-bottom:10px;background:var(--panel);transition:border-color var(--dur)}
@@ -360,13 +455,12 @@ canvas{display:block;width:100%;touch-action:pan-y}
   .navbtn{padding:14px 10px 12px;font-size:.78125rem}
   header{padding:20px 16px 0}
   .content{padding:14px 16px 56px}
-  .compare{grid-template-columns:1fr}
 }
 @media(max-width:640px){
   .brand{display:none}
   .acctchip{display:none}
   .calgrid{gap:4px}
-  .calcell{aspect-ratio:auto;min-height:56px;padding:6px}
+  .calcell{height:56px;padding:6px}
   .calcell .dn{font-size:.625rem}
   .calcell .cp{font-size:.625rem;letter-spacing:-.02em}
   .calcell .ct{display:none}
@@ -397,11 +491,12 @@ tbody tr:active{background:#1b1b1f;transition-duration:0s}
 .calcell.has:active{transform:scale(.97);transition-duration:.09s}
 .closeX{width:36px;height:36px;margin:-8px -8px -8px auto;border-radius:50%;display:grid;place-items:center;flex:none;transition:color var(--dur),background var(--dur),transform .32s var(--spring)}
 .closeX:hover{background:var(--panel2)}
+.closeX .ic{width:20px;height:20px}
 .closeX:active{transform:scale(.9);transition-duration:var(--dur),var(--dur),.09s}
 input:focus,select:focus,textarea:focus{border-color:var(--muted);box-shadow:0 0 0 3px rgba(255,255,255,.06)}
-input[type=text],input[type=number],input[type=date],select,textarea{transition:border-color var(--dur),box-shadow var(--dur)}
+input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{transition:border-color var(--dur),box-shadow var(--dur)}
 /* iOS zooms the page when a focused field is under 16px — keep touch fields at 16 */
-@media(pointer:coarse){input[type=text],input[type=number],input[type=date],select,textarea{font-size:1rem}}
+@media(pointer:coarse){input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{font-size:1rem}}
 
 /* ---------- Sliding indicators: the selection travels, it doesn't jump ---------- */
 nav{position:relative}
@@ -431,19 +526,22 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
   .modal .mhead::before{content:"";position:absolute;top:9px;left:50%;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:var(--border)}
   .modal .mbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
   #overlay.closing .modal .mhead{pointer-events:auto}
+  .modal .mbody.hasfoot{padding-bottom:22px}
+  .modal .mfoot{position:relative;flex:none;border-radius:0}
+  .modal .mfoot .btn{min-height:44px;padding-left:20px;padding-right:20px}
 }
 
 /* ---------- Navigation extras ---------- */
 .navbtn .lbl{display:block}
 .navbtn.more{display:none}
-.only-phone{display:none}
 .modal:focus{outline:none}
 .morelist{padding-top:6px!important}
 .morerow{display:flex;align-items:center;gap:14px;width:100%;padding:15px 2px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);font-size:1rem;text-align:left;transition:background var(--dur)}
 .morerow:last-child{border-bottom:0}
 .morerow .ico{display:block;line-height:0;color:var(--muted)}
 .morerow .lbl{flex:1}
-.morerow .chev{color:var(--faint);font-size:1.25rem;line-height:1}
+.morerow .chev{color:var(--faint);line-height:0}
+.morerow .chev .ic{width:18px;height:18px}
 .morerow.on{font-weight:600}
 .morerow.on .ico{color:var(--text)}
 .morerow:active{background:var(--panel2);transition-duration:0s}
@@ -478,14 +576,35 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
   .content{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   #toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   header{padding-top:16px}
-  .periodgrid{grid-template-columns:1fr 1fr;gap:10px}
+  .periodgrid{gap:10px}
   .pcard{padding:14px 13px}
   .pcard .v{font-size:1.375rem}
-  .row>.only-phone{display:block}
+  /* touch targets: 44px for anything tappable */
+  .btn{min-height:44px}
+  .btn.sm{min-height:40px;padding-left:14px;padding-right:14px}
+  .btn.icon{width:44px;height:44px}
+  .closeX{width:44px;height:44px;margin:-10px -10px -10px auto}
+  .linkbtn{min-height:44px}
+  button.tag-chip{min-height:38px;padding:7px 13px;margin:3px 5px 3px 0}
+  .segmented button,.subtabs button,.rangebtns button,.statusbtns button{position:relative;min-height:36px}
+  .segmented button::after,.subtabs button::after,.rangebtns button::after,.statusbtns button::after{content:"";position:absolute;left:0;right:0;top:-5px;bottom:-5px}
+  .dbhead-row{min-height:56px}
+  header{gap:12px}
+  #symFilter{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .statuspill{height:32px}
+  .capline input{min-height:40px}
+  /* trades: four filters behind a Filter button, Sort stays out */
+  .logbar{padding:12px}
+  .logtop{display:flex;gap:10px;align-items:center}
+  .logtop .filterbtn{min-height:44px;flex:none}
+  .logtop select{flex:1;min-height:44px}
+  .logfilters{display:none;margin-top:12px}
+  .logfilters.open{display:flex}
   .subtabs{display:flex;flex-wrap:nowrap}
   .subtabs button{flex:1 1 auto;padding:7px 6px;text-align:center}
-  .lockbar{padding:12px 14px;gap:8px 12px;font-size:.8125rem}
-  .lockbar .spacer{display:none}
+  .lockbar{padding:12px 14px;gap:10px;font-size:.8125rem;flex-wrap:wrap}
+  .lockbar .lbtext{flex-basis:calc(100% - 34px)}
+  .lockbar .streakchip{margin-left:32px}
   .calhead{flex-wrap:wrap;gap:8px 10px}
   .calhead .mname{min-width:0;flex:1}
   .gauge .glabel{flex-direction:column;gap:2px}
@@ -524,7 +643,8 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
   .navbtn:active,.btn:active,button.tag-chip:active,.segmented button:active,.subtabs button:active,.rangebtns button:active,.statusbtns button:active,.calcell.has:active,.calcell.has:hover,.closeX:active{transform:none}
   nav.thumbed.thumb-anim::after,.thumbed.thumb-anim::before{transition:none}
   #toast,#toast.show{transform:translateX(-50%)}
-  .barrow .fill,.gauge .fill{transition:none}
+  .barrow .fill,.gauge .fill,.cfill,.ckmeter i{transition:none}
+  .dbhead-row .chev .ic{transition:none}
 }
 @media(prefers-reduced-transparency:reduce){
   #sidebar{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -537,6 +657,12 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
   #overlay::before{background:rgba(0,0,0,.88);-webkit-backdrop-filter:none;backdrop-filter:none}
   #toast{background:#141416;-webkit-backdrop-filter:none;backdrop-filter:none;border-color:var(--border)}
   .modal{border-color:var(--border)}
+  .note,.warn,.inset,.debrief-card,.dbtrade,.chartbox .tablewrap,.chartbox .plancard{box-shadow:inset 0 0 0 1px var(--line2)}
+  .calcell{border-color:var(--line2)}
+  .heatcell{box-shadow:inset 0 0 0 1px var(--line2)}
+  .statuspill,.streakchip{border-color:var(--border)}
+  .tickmark{border-color:var(--muted)}
+  .ctrack,.ckmeter{box-shadow:inset 0 0 0 1px var(--line2)}
 }
 </style>
 
@@ -546,14 +672,13 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
   <aside id="sidebar">
     <div class="brand">
       <div class="logo">Aeth<b>e</b>r</div>
-      <div class="tag">Price Action Journal</div>
     </div>
     <nav id="nav" aria-label="Sections">
       <button class="navbtn active" data-page="dashboard"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span><span class="lbl">Dashboard</span></button>
       <button class="navbtn" data-page="log"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.4 6.5h.2M4.4 12h.2M4.4 17.5h.2" stroke-width="2.6"/></svg></span><span class="lbl">Trades</span></button>
       <button class="navbtn" data-page="insights"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="11" width="4" height="9.5" rx="1.1"/><rect x="10" y="3.5" width="4" height="17" rx="1.1"/><rect x="16.5" y="14" width="4" height="6.5" rx="1.1"/></svg></span><span class="lbl">Insights</span></button>
       <button class="navbtn sec" data-page="plan"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/><path d="M11.9 12h.2" stroke-width="2.6"/></svg></span><span class="lbl">Plan &amp; Tools</span></button>
-      <button class="navbtn sec" data-page="import"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4.5 14v4a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-4"/></svg></span><span class="lbl">Import</span></button>
+      <button class="navbtn sec" data-page="import"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.5"/><path d="M4.5 6v12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5V6M4.5 12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5"/></svg></span><span class="lbl">Data &amp; Settings</span></button>
       <button class="navbtn sec" data-page="rules"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 2.6v5.4c0 4.3-2.9 7.6-7 9-4.1-1.4-7-4.7-7-9V6.1z"/><path d="M9 12l2.2 2.2 3.9-4.3"/></svg></span><span class="lbl">Rules &amp; Levels</span></button>
       <button class="navbtn" data-page="checklist"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/></svg></span><span class="lbl">Checklist</span></button>
       <button class="navbtn more" id="navMore" aria-haspopup="dialog"><span class="ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.4 12h.2M11.9 12h.2M18.4 12h.2" stroke-width="3"/></svg></span><span class="lbl">More</span></button>
@@ -566,9 +691,9 @@ nav.thumbed .navbtn.active{border-bottom-color:transparent}
 
   <div id="main">
     <header>
-      <button class="menutoggle" id="menutoggle">☰</button>
       <span class="ttl" id="pageTitle">Dashboard</span>
       <span class="spacer"></span>
+      <button type="button" class="statuspill" id="statusPill" hidden><span class="dot" aria-hidden="true"></span><span class="pl"></span></button>
       <div class="segmented" id="symFilter">
         <button class="on" data-sym="ALL">All</button>
       </div>
@@ -880,11 +1005,39 @@ const amt=n=>CURSYM+Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
 const pct=n=>n==null||isNaN(n)?'—':fmt(n,1)+'%';
 const signCls=n=>n>0?'pos':n<0?'neg':'';
 const escapeHtml=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* Icons — inline SVG in the nav's style (24px grid, 1.75 stroke, round caps), so
+   they render the same on every device instead of depending on font glyphs. */
+const ICONS={
+  x:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  play:'<path d="M8 5.5v13l10.5-6.5z"/>',
+  download:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/>',
+  upload:'<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/>',
+  table:'<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/>',
+  refresh:'<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>',
+  sparkle:'<path d="M11 3.5l1.9 5.1 5.1 1.9-5.1 1.9L11 17.5l-1.9-5.1L4 10.5l5.1-1.9z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
+  calendar:'<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  cloudUp:'<path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6 3.8 3.8 0 0 1-.4 7.4"/><path d="M12 20v-7.5M9 15.5l3-3 3 3"/>',
+  cloudDown:'<path d="M7 17.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6 3.8 3.8 0 0 1-.4 7.4"/><path d="M12 11.5v8.5M9 17l3 3 3-3"/>',
+  stop:'<path d="M8.3 3.5h7.4l4.8 4.8v7.4l-4.8 4.8H8.3l-4.8-4.8V8.3z"/><path d="M8.5 12h7"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  alert:'<path d="M10.3 4.6L3.2 17.2A2 2 0 0 0 5 20.2h14a2 2 0 0 0 1.8-3L13.7 4.6a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5"/><path d="M12 17.2h.01" stroke-width="2.4"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  checkCircle:'<circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/>',
+  chevR:'<path d="M9.5 6l6 6-6 6"/>',
+  chevL:'<path d="M14.5 6l-6 6 6 6"/>',
+  chevD:'<path d="M6 9.5l6 6 6-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  trash:'<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 12.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5l1-12.5"/>',
+  filter:'<path d="M4 6.5h16M7 12h10M10 17.5h4"/>',
+  arrowR:'<path d="M5 12h14M13 6l6 6-6 6"/>'
+};
+const iconSVG=(name,cls)=>'<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+(ICONS[name]||'')+'</svg>';
+function icon(name,cls){const t=document.createElement('template');t.innerHTML=iconSVG(name,cls);return t.content.firstChild;}
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* animated number count-up (respects reduced motion) */
 function countUp(node,target,f,dur){dur=dur||650;if(REDUCED||target==null||!isFinite(target)){node.textContent=f(target);return;}const t0=performance.now();(function step(now){const p=Math.min(1,(now-t0)/dur);const e=1-Math.pow(1-p,3);node.textContent=f(target*e);if(p<1)requestAnimationFrame(step);})(t0);}
 let toastT;
-function toast(msg,kind){const t=$('#toast');const bad=kind==='bad'||kind===true,good=kind==='good';t.textContent=(good?'✓  ':bad?'✕  ':'')+msg;t.className='show'+(bad?' bad':good?' good':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',Math.min(9000,Math.max(2800,1400+String(msg).length*55)));}
+function toast(msg,kind){const t=$('#toast');const bad=kind==='bad'||kind===true,good=kind==='good';t.replaceChildren(...(good||bad?[icon(good?'check':'x','tic')]:[]),String(msg));t.className='show'+(bad?' bad':good?' good':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',Math.min(9000,Math.max(2800,1400+String(msg).length*55)));}
 
 /* ---------- constants / config ---------- */
 const SESSIONS=["Asian","London","NY","Late","Off"];
@@ -1239,35 +1392,51 @@ function liveStatus(){
     scaled:dayPL>=RULES.scaleAfter};
 }
 let lockTimer=null;
-function renderLockBanner(){
-  const host=$('#lockBanner');if(!host)return;
-  if(!STATE.trades.length){host.innerHTML='';return;}
+/* One reading of liveStatus() shared by the full banner and the header pill,
+   so the two can never disagree. The binding constraint is whichever cap has
+   less loss room left. */
+function statusSummary(){
   const s=liveStatus();
-  const stk=cleanDayStreak(STATE.trades);
-  const streakChip=`<span class="streakchip">${stk.streak>0?'<span class="fire">●</span>':'<span style="color:var(--faint)">○</span>'} <b>${stk.streak}</b>&nbsp;clean-day streak</span>`;
-  let cls,msg,cd='';
-  // the binding constraint is whichever cap has less loss room left
   const weeklyTighter=s.roomWeekly<s.roomDaily;
   const room=Math.max(0,weeklyTighter?s.roomWeekly:s.roomDaily);
   const capName=weeklyTighter?('weekly −'+amt(RULES.weeklyLoss)):('daily −'+amt(RULES.dailyLoss));
   if(s.dailyHit||s.weeklyHit){
-    cls='stop';
-    if(s.weeklyHit) msg=`<span class="big">⛔ Weekly loss cap (−${amt(RULES.weeklyLoss)}) breached.</span> <span>Week P&L ${usd(s.weekPL)}. Done for the week — walk away.</span>`;
-    else            msg=`<span class="big">⛔ Daily loss cap (−${amt(RULES.dailyLoss)}) breached.</span> <span>Day P&L ${usd(s.dayPL)}. Walk away — no more entries today.</span>`;
-  } else if(s.inBreak){
-    cls='cool';const left=Math.max(0,Math.ceil(RULES.breakMins-s.sinceLoss));
-    cd=`<span class="cd">${left}m</span>`;
-    msg=`<span class="big">⏳ Cooldown after stopout.</span> <span>${breakLabel()} break — no entries for</span>`;
-  } else if(room<=RULES.maxRisk){
-    cls='cool';
-    msg=`<span class="big">⚠ ${usd(room)} of loss room left.</span> <span>Only ${usd(room)} before the ${capName} cap · day P&L ${usd(s.dayPL)}. One more loser closes you out — trade carefully.</span>`;
-  } else {
-    cls='ok';
-    msg=`<span class="big">✓ Clear to trade.</span> <span>${usd(room)} of loss room before the ${capName} cap · day P&L ${usd(s.dayPL)} · ${s.scaled?'scaled mode (risk '+amt(RULES.scaledRisk)+', '+amt(RULES.drawback)+' lock-in)':'risk up to '+amt(RULES.maxRisk)}</span>`;
+    if(s.weeklyHit)return{cls:'stop',ic:'stop',big:'Weekly loss cap (−'+amt(RULES.weeklyLoss)+') breached.',detail:'Week P&L '+usd(s.weekPL)+'. Done for the week — walk away.',pill:'Weekly cap hit'};
+    return{cls:'stop',ic:'stop',big:'Daily loss cap (−'+amt(RULES.dailyLoss)+') breached.',detail:'Day P&L '+usd(s.dayPL)+'. Walk away — no more entries today.',pill:'Daily cap hit'};
   }
-  host.innerHTML=`<div class="lockbar ${cls}">${msg} ${cd}<span class="spacer"></span>${streakChip}</div>`;
-  clearTimeout(lockTimer);lockTimer=setTimeout(renderLockBanner,30000);
+  if(s.inBreak){
+    const left=Math.max(0,Math.ceil(RULES.breakMins-s.sinceLoss));
+    return{cls:'cool',ic:'clock',big:'Cooldown after stopout.',detail:breakLabel()+' break — no entries for',cd:left+'m',pill:'Cooldown · '+left+'m'};
+  }
+  if(room<=RULES.maxRisk)return{cls:'cool',ic:'alert',big:usd(room)+' of loss room left.',detail:'Only '+usd(room)+' before the '+capName+' cap · day P&L '+usd(s.dayPL)+'. One more loser closes you out — trade carefully.',pill:'Tight · '+usd(room)+' room'};
+  return{cls:'ok',ic:'checkCircle',big:'Clear to trade.',detail:usd(room)+' of loss room before the '+capName+' cap · day P&L '+usd(s.dayPL)+' · '+(s.scaled?'scaled mode (risk '+amt(RULES.scaledRisk)+', '+amt(RULES.drawback)+' lock-in)':'risk up to '+amt(RULES.maxRisk)),pill:'Clear · '+usd(room)+' room'};
 }
+/* the full banner belongs where the question "may I trade?" is asked; everywhere else a pill in the header */
+const BANNER_PAGES=['dashboard','checklist'];
+function renderLockBanner(){
+  const host=$('#lockBanner'),pill=$('#statusPill');if(!host)return;
+  clearTimeout(lockTimer);
+  if(!STATE.trades.length){host.innerHTML='';if(pill)pill.hidden=true;return;}
+  const st=statusSummary();
+  const full=BANNER_PAGES.includes(currentPage);
+  host.innerHTML='';
+  if(full){
+    const stk=cleanDayStreak(STATE.trades);
+    host.append(el('div',{class:'lockbar '+st.cls,role:'status'},
+      el('span',{class:'lbic'},icon(st.ic)),
+      el('div',{class:'lbtext'},el('span',{class:'big'},st.big),' ',el('span',{},st.detail),st.cd?el('span',{class:'cd'},' '+st.cd):null),
+      el('span',{class:'streakchip'},el('span',{class:'sdot'+(stk.streak>0?' on':'')}),el('b',{},String(stk.streak)),'clean-day streak')));
+  }
+  if(pill){
+    pill.hidden=full;
+    pill.className='statuspill '+st.cls;
+    pill.querySelector('.pl').textContent=st.pill;
+    pill.setAttribute('aria-label','Trading status: '+st.pill+'. Open the checklist');
+    pill.title=st.big;
+  }
+  lockTimer=setTimeout(renderLockBanner,30000);
+}
+$('#statusPill').addEventListener('click',()=>go('checklist'));
 
 /* ============================================================
    CANVAS CHARTS
@@ -1315,6 +1484,16 @@ function lineChart(canvas,series,opts={}){
       // grid + y labels
       ctx.strokeStyle='#222226';ctx.font='10px '+CSSV('--mono');ctx.textAlign='right';ctx.textBaseline='middle';
       const ticks=5;for(let i=0;i<=ticks;i++){const v=ymin+(ymax-ymin)*i/ticks;const y=Y(v);ctx.globalAlpha=v===0?.5:.25;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle=v===0?CSSV('--muted'):CSSV('--faint');ctx.fillText((v<0?'-':'')+CURSYM+Math.abs(v).toFixed(0),pad.l-7,y);}
+      // date ticks: first, middle and last point (each point carries its statement-clock day)
+      const p0=series[0]&&series[0].points;
+      if(opts.xTicks&&p0&&p0.length&&p0[0].day){
+        const idx=[...new Set([0,Math.floor((p0.length-1)/2),p0.length-1])];let lastLab='';
+        ctx.fillStyle=CSSV('--faint');ctx.textBaseline='alphabetic';ctx.font='10px '+CSSV('--sans');
+        idx.forEach((k,n)=>{const lab=fmtDay(p0[k].day);if(lab===lastLab)return;lastLab=lab;
+          ctx.textAlign=idx.length>1&&n===0?'left':n===idx.length-1&&idx.length>1?'right':'center';
+          ctx.fillText(lab,X(p0[k].x),h-5);});
+        ctx.font='10px '+CSSV('--mono');
+      }
       // draw-on reveal
       ctx.save();ctx.beginPath();ctx.rect(0,0,pad.l+plotW*prog+3,h);ctx.clip();
       // soft fill under the primary series — fades with distance from the zero line
@@ -1358,25 +1537,55 @@ function lineChart(canvas,series,opts={}){
   }
 }
 
+/* a "nice" tick step (1, 2 or 5 × 10ⁿ) so axis labels land on round numbers */
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p;}
+/* a bar with its far end rounded — the top for gains, the bottom for losses */
+function barPath(ctx,x,y,w,h,r,up){
+  r=Math.max(0,Math.min(r,w/2,h));ctx.beginPath();
+  if(up){ctx.moveTo(x,y+h);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h);}
+  else{ctx.moveTo(x,y);ctx.lineTo(x,y+h-r);ctx.quadraticCurveTo(x,y+h,x+r,y+h);ctx.lineTo(x+w-r,y+h);ctx.quadraticCurveTo(x+w,y+h,x+w,y+h-r);ctx.lineTo(x+w,y);}
+  ctx.closePath();ctx.fill();
+}
+/* opts: height, colors[], counts (integer axis + tooltip), ref:{value,label} for a dashed reference line */
 function barChart(canvas,labels,values,opts={}){
   const draw=animate=>{
     const {ctx,w,h}=setupCanvas(canvas,opts.height||220);
-    const pad={l:40,r:12,t:12,b:30};const plotW=w-pad.l-pad.r,plotH=h-pad.t-pad.b;
+    const pad={l:opts.counts?32:54,r:12,t:16,b:28};const plotW=w-pad.l-pad.r,plotH=h-pad.t-pad.b;
     if(!values.length){ctx.clearRect(0,0,w,h);ctx.fillStyle=CSSV('--faint');ctx.font='12px sans-serif';ctx.fillText('No data',pad.l,h/2);canvas._bhit=null;return;}
-    let vmin=Math.min(0,...values),vmax=Math.max(0,...values);if(vmin===vmax)vmax+=1;
+    const ref=opts.ref&&isFinite(opts.ref.value)?opts.ref:null;
+    let vmin=Math.min(0,...values,ref?ref.value:0),vmax=Math.max(0,...values,ref?ref.value:0);if(vmin===vmax)vmax+=1;
+    let step=niceStep((vmax-vmin)/4);if(opts.counts)step=Math.max(1,Math.round(step));
+    vmin=Math.floor(vmin/step)*step;vmax=Math.ceil(vmax/step)*step;
     const Y=v=>pad.t+(1-(v-vmin)/(vmax-vmin))*plotH;
-    const bw=plotW/values.length;
+    // bars are capped in width and the group is centred, so two months don't become two slabs
+    const n=values.length,slot=Math.min(plotW/n,80),bwI=Math.min(56,slot*.68),x0=pad.l+(plotW-slot*n)/2;
+    const grid=CSSV('--line2'),faint=CSSV('--faint'),muted=CSSV('--muted'),mono=CSSV('--mono');
     const frame=prog=>{
       ctx.clearRect(0,0,w,h);
-      ctx.strokeStyle='#222226';ctx.beginPath();ctx.moveTo(pad.l,Y(0));ctx.lineTo(w-pad.r,Y(0));ctx.stroke();
-      ctx.font='9px '+CSSV('--mono');ctx.textAlign='center';
-      values.forEach((v,i)=>{const x=pad.l+i*bw+bw*0.15,bwI=bw*0.7;const y0=Y(0),y=Y(v*prog);
+      ctx.font='10px '+mono;ctx.textAlign='right';ctx.textBaseline='middle';ctx.lineWidth=1;
+      for(let v=vmin;v<=vmax+step/2;v+=step){
+        const y=Math.round(Y(v))+.5,zero=Math.abs(v)<step/1e6;
+        ctx.strokeStyle=grid;ctx.globalAlpha=zero?1:.5;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.globalAlpha=1;
+        ctx.fillStyle=zero?muted:faint;
+        ctx.fillText(opts.counts?String(Math.round(v)):(v<0?'-':'')+CURSYM+Math.abs(Math.round(v)).toLocaleString('en-US'),pad.l-8,y);
+      }
+      ctx.textAlign='center';ctx.textBaseline='top';
+      let lastRight=-Infinity;
+      values.forEach((v,i)=>{
+        const cx=x0+i*slot+slot/2,x=cx-bwI/2,y0=Y(0),y=Y(v*prog);
         ctx.fillStyle=opts.colors?opts.colors[i]:(v>=0?CSSV('--win'):CSSV('--accent-bright'));
-        ctx.fillRect(x,Math.min(y,y0),bwI,Math.abs(y-y0)||1);
-        ctx.fillStyle=CSSV('--faint');ctx.textBaseline='top';ctx.fillText(labels[i],x+bwI/2,h-pad.b+6);});
+        if(v!==0)barPath(ctx,x,Math.min(y,y0),bwI,Math.max(1,Math.abs(y-y0)),4,v>=0);
+        const lw=ctx.measureText(String(labels[i])).width;
+        if(cx-lw/2>lastRight+6){ctx.fillStyle=faint;ctx.fillText(labels[i],cx,h-pad.b+8);lastRight=cx+lw/2;}
+      });
+      if(ref){
+        const y=Math.round(Y(ref.value))+.5;
+        ctx.strokeStyle=CSSV('--amber');ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.setLineDash([]);
+        if(ref.label){ctx.fillStyle=CSSV('--amber');ctx.textAlign='right';ctx.textBaseline='bottom';ctx.font='10px '+CSSV('--sans');ctx.fillText(ref.label,w-pad.r,y-3);}
+      }
     };
     animFrames(frame,animate,420);
-    canvas._bhit={pad,bw,Y,values,labels,frame};
+    canvas._bhit={x0,slot,Y,values,labels,frame};
   };
   CHARTS.set(canvas,draw);
   draw(true);
@@ -1386,11 +1595,11 @@ function barChart(canvas,labels,values,opts={}){
       const hb=canvas._bhit;if(!hb)return;
       const tip=chartTip(canvas);
       const r=canvas.getBoundingClientRect();const mx=e.clientX-r.left;
-      const i=Math.floor((mx-hb.pad.l)/hb.bw);
+      const i=Math.floor((mx-hb.x0)/hb.slot);
       if(i<0||i>=hb.values.length){tip.classList.remove('on');return;}
       const v=hb.values[i];
       tip.innerHTML='<span class="tl">'+escapeHtml(String(hb.labels[i]))+'</span><span class="'+(v>=0?'pos':'neg')+'">'+(opts.counts?fmt(v,0):usd(v))+'</span>';
-      tip.style.left=(canvas.offsetLeft+hb.pad.l+i*hb.bw+hb.bw/2)+'px';
+      tip.style.left=(canvas.offsetLeft+hb.x0+i*hb.slot+hb.slot/2)+'px';
       tip.style.top=(canvas.offsetTop+hb.Y(Math.max(v,0)))+'px';
       tip.classList.add('on');
     },()=>chartTip(canvas).classList.remove('on'));
@@ -1478,7 +1687,7 @@ function renderMarkdownLite(text){
 /* ============================================================
    NAVIGATION
    ============================================================ */
-const TITLES={dashboard:'Dashboard',log:'Trades',insights:'Insights',plan:'Plan & Tools',import:'Import',rules:'Rules & Levels',checklist:'Checklist'};
+const TITLES={dashboard:'Dashboard',log:'Trades',insights:'Insights',plan:'Plan & Tools',import:'Data & Settings',rules:'Rules & Levels',checklist:'Checklist'};
 let currentPage=null;
 function go(page){
   const changed=page!==currentPage;currentPage=page;
@@ -1487,7 +1696,6 @@ function go(page){
   $$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));
   $('#pageTitle').textContent=TITLES[page];
   $('#symFilter').style.display=(page==='dashboard'||page==='log'||page==='insights')?'':'none';
-  $('#sidebar').classList.remove('open');
   renderLockBanner();
   ({dashboard:renderDashboard,log:renderLog,insights:renderInsights,plan:renderPlan,import:renderImport,rules:renderRules,checklist:renderChecklist}[page])();
   if(changed)window.scrollTo(0,0);   // a new page starts at its top, not wherever the last one was left
@@ -1497,17 +1705,16 @@ $('#nav').addEventListener('click',e=>{const b=e.target.closest('.navbtn');if(!b
 function openMoreSheet(){
   currentTicket=null;
   const m=$('#modal');m.innerHTML='';m.setAttribute('aria-label','More sections');
-  m.append(el('div',{class:'mhead'},el('h3',{},'More'),el('button',{class:'closeX','aria-label':'Close',onclick:closeModal},'×')));
+  m.append(el('div',{class:'mhead'},el('h3',{},'More'),el('button',{class:'closeX','aria-label':'Close',onclick:closeModal},icon('x'))));
   const b=el('div',{class:'mbody morelist'});
   $$('.navbtn.sec').forEach(n=>{
     const row=el('button',{class:'morerow'+(n.classList.contains('active')?' on':''),onclick:()=>{closeModal();go(n.dataset.page);}});
     row.innerHTML=n.innerHTML;                     // icon + label straight from the nav, so the two can't drift apart
-    row.append(el('span',{class:'chev','aria-hidden':'true'},'›'));
+    row.append(el('span',{class:'chev','aria-hidden':'true'},icon('chevR')));
     b.append(row);
   });
   m.append(b);presentModal();
 }
-$('#menutoggle').addEventListener('click',()=>$('#sidebar').classList.toggle('open'));
 $('#symFilter').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;STATE.filter=b.dataset.sym;$$('#symFilter button').forEach(x=>x.classList.toggle('on',x===b));go(currentPage);});
 
 function renderAcctChip(){
@@ -1528,8 +1735,8 @@ function emptyForFilter(root){
 }
 function statCard(k,v,sub,cls){return el('div',{class:'stat'},el('div',{class:'k'},k),el('div',{class:'v '+(cls||'')},v),sub?el('div',{class:'sub'},sub):null);}
 
-const DASH_TABS=[['distribution','Distribution'],['discipline','Discipline'],['timing','Timing'],['calendar','Calendar']];
-const DASH_PAINT={distribution:dashDistribution,discipline:dashDiscipline,timing:dashTiming,calendar:dashCalendar};
+const DASH_TABS=[['overview','Overview'],['discipline','Discipline'],['timing','Timing']];
+const DASH_PAINT={overview:dashOverview,discipline:dashDiscipline,timing:dashTiming};
 
 function renderDebriefPanel(root){
   const tkey=todayKeyLocal();
@@ -1538,11 +1745,11 @@ function renderDebriefPanel(root){
   const existing=STATE.debriefs.find(d=>d.date===tkey)||null;
 
   const panel=el('div',{class:'debrief collapsible'});
-  const chev=el('span',{class:'chev'},'▸');
+  const chev=el('span',{class:'chev','aria-hidden':'true'},icon('chevR'));
   const hint=el('span',{class:'faint',style:'font-size:.71875rem'},existing?'written':'');
   const head=el('div',{class:'dbhead-row',tabindex:'0',role:'button',onclick:()=>{STATE.debriefOpen=!STATE.debriefOpen;paint();}},
     chev,
-    el('div',{class:'eyebrow',style:'margin:0'},'Daily journal'),
+    el('span',{class:'dbttl'},'Daily journal'),
     el('span',{class:'pill '+(today.length?(dayPL>=0?'win':'loss'):''),style:'margin-left:auto'},today.length?today.length+' trade'+(today.length>1?'s':'')+' · '+usd(dayPL):'no trades today'),
     hint);
   panel.append(head);
@@ -1562,7 +1769,7 @@ function renderDebriefPanel(root){
     const entry=el('textarea',{placeholder:'Chased gold into NY after the first loss. Knew it wasn\'t A+ and took it anyway.\n\n## Tomorrow\n1. No entry without an H1 level.',style:'min-height:150px;font-family:var(--mono);font-size:.8125rem'});
     entry.value=(existing&&existing.text)||'';
     body.append(entry);
-    body.append(el('div',{class:'faint',style:'font-size:.75rem;margin-top:6px'},'Saved to this device only. Supports simple markdown — ## headings, - bullets, 1. lists, **bold**.'));
+    body.append(el('div',{class:'help'},'Saved to this device only. Supports simple markdown — ## headings, - bullets, 1. lists, **bold**.'));
 
     const save=el('button',{class:'btn primary'},'Save entry');
     const status=el('span',{class:'faint',style:'font-size:.75rem'});
@@ -1592,7 +1799,7 @@ function renderDebriefPanel(root){
     });
   }
   function paint(){
-    chev.textContent=STATE.debriefOpen?'▾':'▸';
+    head.setAttribute('aria-expanded',String(!!STATE.debriefOpen));
     if(STATE.debriefOpen&&!body._built){buildBody();body._built=true;}
     body.style.display=STATE.debriefOpen?'':'none';
   }
@@ -1609,23 +1816,21 @@ function renderDashboard(){
     root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),
       el('div',{},'Import your MT5 statement to begin.'),
       el('div',{style:'margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'},
-        el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'),
-        el('button',{class:'btn',onclick:loadDemoData},'▶ Try with sample data'))));
+        el('button',{class:'btn primary',onclick:()=>go('import')},'Import a statement'),
+        el('button',{class:'btn',onclick:loadDemoData},icon('play'),'Try with sample data'))));
     return;
   }
-  if(STATE.settings.demoData)root.append(el('div',{class:'note',style:'margin-bottom:14px'},'You\'re looking at sample data — a fabricated account for exploring. Clear it under Import, or just import a real statement over it.'));
-  renderPeriodStrip(root,list);        // today / week / month / all-time at a glance
-  dashHero(root,list);                 // headline + equity curve
-  renderDebriefPanel(root);            // coach — collapsed below
+  if(STATE.settings.demoData)root.append(el('div',{class:'note',style:'margin-bottom:16px'},'You\'re looking at sample data — a fabricated account for exploring. Clear it under Data & Settings, or just import a real statement over it.'));
+  renderPeriodStrip(root,list);        // today (lead) / this week / this month
+  perfCard(root,list);                 // the page's hero: net P&L for a range, the discipline gap, the curve
+  renderDebriefPanel(root);            // journal / coach — collapsed
   root.append(el('h2',{class:'sec'},'Calendar'));
   const calBox=el('div',{class:'chartbox'});const calHost=el('div');calBox.append(calHost);root.append(calBox);
-  renderCalendar(calHost,list,'main'); // the daily-trades calendar, front and center
-  root.append(el('h2',{class:'sec'},'Daily & monthly rhythm'));
-  renderRollups(root,list);            // day quality + weekly/monthly P&L
-  root.append(el('div',{style:'margin-top:16px'},el('button',{class:'btn',onclick:()=>go('insights')},'View full insights →')));
+  renderCalendar(calHost,list,'main');
+  root.append(el('div',{class:'dashfoot'},el('button',{class:'linkbtn',onclick:()=>go('insights')},'View full insights',icon('arrowR'))));
 }
 
-/* ---- period strip: Today / This week / This month / All time ---- */
+/* ---- period strip: Today (the lead) / This week / This month ---- */
 function gaugeRow(label,frac,txt,hot){
   const fill=el('div',{class:'fill'});
   fill.style.background=hot?'var(--accent-bright)':frac>0.66?'var(--amber)':'var(--win-bright)';
@@ -1640,12 +1845,11 @@ function renderPeriodStrip(root,list){
   const defs=[
     {k:'Today',cur:t=>t.dayKey===K.today,prev:t=>t.dayKey===K.yesterday,prevLab:'yesterday',today:true},
     {k:'This week',cur:t=>t.weekKey===K.week,prev:t=>t.weekKey===K.lastWeek,prevLab:'last week',week:true},
-    {k:'This month',cur:t=>(t.dayKey||'').startsWith(K.month),prev:t=>(t.dayKey||'').startsWith(K.lastMonth),prevLab:'last month'},
-    {k:'All time',cur:()=>true,prev:null}
+    {k:'This month',cur:t=>(t.dayKey||'').startsWith(K.month),prev:t=>(t.dayKey||'').startsWith(K.lastMonth),prevLab:'last month'}
   ];
   defs.forEach(d=>{
     const cur=bucketStats(list,d.cur);
-    const card=el('div',{class:'pcard'});
+    const card=el('div',{class:'pcard'+(d.today?' lead':'')});
     card.append(el('div',{class:'k'},d.k));
     const v=el('div',{class:'v '+signCls(cur.pl)});card.append(v);
     countUp(v,cur.pl,x=>usd(x));
@@ -1683,16 +1887,16 @@ function renderRollups(root,list){
     root.append(cards);
   }
   const two=el('div',{class:'grid two'});
-  const wkBox=el('div',{class:'chartbox'});wkBox.append(el('h4',{},'P&L by week'),el('div',{class:'cap'},'last 12 weeks with trades — weekly cap −'+amt(RULES.weeklyLoss)));
+  const wkBox=el('div',{class:'chartbox'});wkBox.append(el('h4',{},'P&L by week'),el('div',{class:'cap'},'Last 12 weeks with trades. The dashed line is your −'+amt(RULES.weeklyLoss)+' weekly cap.'));
   const wkC=el('canvas');wkBox.append(wkC);
-  const moBox=el('div',{class:'chartbox'});moBox.append(el('h4',{},'P&L by month'),el('div',{class:'cap'},'every month on record'));
+  const moBox=el('div',{class:'chartbox'});moBox.append(el('h4',{},'P&L by month'),el('div',{class:'cap'},'Every month on record.'));
   const moC=el('canvas');moBox.append(moC);
   two.append(wkBox,moBox);root.append(two);
   requestAnimationFrame(()=>{
     const byWk={},byMo={};
     list.forEach(t=>{if(t.weekKey)byWk[t.weekKey]=(byWk[t.weekKey]||0)+t.pl;const mo=(t.dayKey||'').slice(0,7);if(mo)byMo[mo]=(byMo[mo]||0)+t.pl;});
     const wks=Object.keys(byWk).sort().slice(-12);
-    barChart(wkC,wks.map(w=>w.slice(5)),wks.map(w=>byWk[w]),{height:210});
+    barChart(wkC,wks.map(w=>w.slice(5)),wks.map(w=>byWk[w]),{height:210,ref:{value:-RULES.weeklyLoss,label:'weekly cap −'+amt(RULES.weeklyLoss)}});
     const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const mos=Object.keys(byMo).sort();
     barChart(moC,mos.map(m=>MOS[+m.slice(5)-1]+' '+m.slice(2,4)),mos.map(m=>byMo[m]),{height:210});
@@ -1707,17 +1911,17 @@ function renderInsights(){
     root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),
       el('div',{},'Import your MT5 statement to see your analytics.'),
       el('div',{style:'margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'},
-        el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'),
-        el('button',{class:'btn',onclick:loadDemoData},'▶ Try with sample data'))));
+        el('button',{class:'btn primary',onclick:()=>go('import')},'Import a statement'),
+        el('button',{class:'btn',onclick:loadDemoData},icon('play'),'Try with sample data'))));
     return;
   }
-  if(!DASH_PAINT[STATE.dashTab])STATE.dashTab='distribution';
-  const bar=el('div',{class:'subtabs'});
-  DASH_TABS.forEach(([key,label])=>bar.append(el('button',{class:STATE.dashTab===key?'on':'',onclick:()=>{if(STATE.dashTab!==key){STATE.dashTab=key;paint();}}},label)));
+  if(!DASH_PAINT[STATE.dashTab])STATE.dashTab='overview';
+  const bar=el('div',{class:'subtabs',role:'tablist','aria-label':'Insights'});
+  DASH_TABS.forEach(([key,label])=>bar.append(el('button',{class:STATE.dashTab===key?'on':'',role:'tab','aria-selected':String(STATE.dashTab===key),onclick:()=>{if(STATE.dashTab!==key){STATE.dashTab=key;paint();}}},label)));
   root.append(bar);
   const body=el('div',{class:'tabbody'});root.append(body);
   function paint(){
-    [...bar.children].forEach((b,i)=>b.classList.toggle('on',DASH_TABS[i][0]===STATE.dashTab));
+    [...bar.children].forEach((b,i)=>{const on=DASH_TABS[i][0]===STATE.dashTab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));});
     body.innerHTML='';
     body.classList.remove('fadein');void body.offsetWidth;body.classList.add('fadein');
     DASH_PAINT[STATE.dashTab](body,list);
@@ -1725,87 +1929,96 @@ function renderInsights(){
   paint();
 }
 
-/* ---- Home › performance hero (the headline) ---- */
-function dashHero(root,list){
-  const g=groupStats(list);const mdd=maxDrawdown(list);const st=streaks(list);
-
-  const hero=el('div',{class:'hero'});
-  hero.append(el('div',{class:'pnllabel'},(STATE.filter==='ALL'?'All instruments · pooled':STATE.filter)+' · net P&L'));
-  const pnlEl=el('div',{class:'pnl '+signCls(g.total)});
-  hero.append(pnlEl);
-  countUp(pnlEl,g.total,x=>usd(x),800);
-  const mini=el('div',{class:'mini'});
-  const m=(k,v,cls)=>el('div',{class:'m'},el('div',{class:'k'},k),el('div',{class:'v '+(cls||'')},v));
-  mini.append(
-    m('Trades',String(g.n)),
-    m('Win rate',pct(g.winRate),g.winRate!=null&&g.winRate>=50?'pos':g.winRate!=null?'neg':''),
-    m('Profit factor',g.profitFactor===Infinity?'∞':fmt(g.profitFactor,2),g.profitFactor>=1?'pos':'neg'),
-    m('Expectancy',usd(g.expDollar),signCls(g.expDollar)),
-    m('Avg R',g.expR!=null?fmt(g.expR,2)+'R':'—',signCls(g.expR)),
-    m('Max DD',usd(mdd),'neg')
-  );
-  hero.append(mini);
-  root.append(hero);
-
-  // supporting cards
-  const cards=el('div',{class:'cards',style:'margin-bottom:18px'});
-  cards.append(
-    statCard('Avg win',usd(g.avgWin),'',''),
-    statCard('Avg loss',usd(g.avgLoss),'',''),
-    statCard('Gross',usd(g.gp)+' / '+usd(g.gl),'profit / loss'),
-    statCard('Streaks',st.maxWin+'W · '+st.maxLoss+'L','best run / worst run')
-  );
-  root.append(cards);
-
-  // equity curve with discipline-adjusted overlay + range selector
-  const sec=el('h2',{class:'sec'},'Equity curve');
-  const rb=el('div',{class:'rangebtns'});
-  [['1W','1W'],['1M','1M'],['3M','3M'],['ALL','All']].forEach(([v,lab])=>rb.append(el('button',{class:STATE.heroRange===v?'on':'',onclick:()=>{STATE.heroRange=v;[...rb.children].forEach(b=>b.classList.toggle('on',b.textContent===lab));drawEq();}},lab)));
-  sec.append(rb);
-  root.append(sec);
-  const eqBox=el('div',{class:'chartbox'});
-  const eqCanvas=el('canvas');eqBox.append(el('h4',{},'Cumulative P&L — actual vs discipline-adjusted'),el('div',{class:'cap'},'Discipline-adjusted = the curve if every rule-breaking trade were skipped · hover or touch for detail'),eqCanvas);
-  const legend=el('div',{class:'legend'});eqBox.append(legend);
-  const noteHost=el('div');eqBox.append(noteHost);
-  root.append(eqBox);
-
+/* ---- Dashboard › Performance: the page's one hero ----
+   Net P&L for the chosen range, the discipline story in one line, the curve
+   with its rules-followed twin, and four supporting figures for the same range. */
+const RANGES=[['1W','1W',7,'last 7 days'],['1M','1M',30,'last 30 days'],['3M','3M',90,'last 90 days'],['ALL','All',null,'all time']];
+function countBetween(node,from,to,f,dur){
+  if(REDUCED||from==null||!isFinite(from)||!isFinite(to)){node.textContent=f(to);return;}
+  const t0=performance.now();dur=dur||420;
+  (function step(now){const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);node.textContent=f(from+(to-from)*e);if(p<1)requestAnimationFrame(step);})(t0);
+}
+function perfCard(root,list){
+  const card=el('section',{class:'perf','aria-labelledby':'perfTtl'});
+  const rb=el('div',{class:'rangebtns',role:'group','aria-label':'Range'});
+  RANGES.forEach(([v,lab])=>rb.append(el('button',{class:STATE.heroRange===v?'on':'','aria-pressed':String(STATE.heroRange===v),onclick:()=>{
+    if(STATE.heroRange===v)return;STATE.heroRange=v;
+    [...rb.children].forEach((b,i)=>{const on=RANGES[i][0]===v;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});
+    paint();}},lab)));
+  card.append(el('div',{class:'perfhead'},el('h2',{class:'perfttl',id:'perfTtl'},'Equity'),rb));
+  const lab=el('div',{class:'k'});
+  const num=el('div',{class:'perfnum display'});
+  const disc=el('div',{class:'discline'});
+  const wrap=el('div',{class:'chartwrap'});const cv=el('canvas',{'aria-label':'Cumulative P&L chart',role:'img'});wrap.append(cv);
   const baseCol=STATE.filter==='ALL'?CSSV('--text'):(CSSV('--'+(symInfo(STATE.filter).cls||''))||CSSV('--text'));
   const lg1=el('span',{},el('i',{}),'Actual');lg1.firstChild.style.background=baseCol;
-  const lg2=el('span',{},el('i',{}),'Discipline-adjusted');lg2.firstChild.style.background=CSSV('--win-bright');
-  legend.append(lg1,lg2);
-
-  function drawEq(){
-    const days={'1W':7,'1M':30,'3M':90}[STATE.heroRange];
-    const cutoff=days?nowStmt()-days*864e5:null;
-    const ordered=list.filter(t=>t.closeMs!=null&&(!cutoff||t.closeMs>=cutoff)).slice().sort((a,b)=>a.closeMs-b.closeMs);
+  const lg2=el('span',{},el('i',{class:'dash'}),'Following your rules');lg2.firstChild.style.borderColor=CSSV('--win-bright');
+  const legend=el('div',{class:'legend'},lg1,lg2);
+  const figs=el('div',{class:'figrow'});
+  card.append(lab,num,disc,wrap,legend,figs);
+  root.append(card);
+  let shown=null;
+  function paint(){
+    const R=RANGES.find(r=>r[0]===STATE.heroRange)||RANGES[3];
+    const cutoff=R[2]?nowStmt()-R[2]*864e5:null;
+    const inRange=cutoff?list.filter(t=>t.closeMs!=null&&t.closeMs>=cutoff):list;
+    const ordered=inRange.filter(t=>t.closeMs!=null).slice().sort((a,b)=>a.closeMs-b.closeMs);
     let act=0,cln=0;const actPts=[],clnPts=[];
-    ordered.forEach((t,i)=>{act+=t.pl;if(!t.ruleBroken)cln+=t.pl;actPts.push({x:i,y:act,lab:(t.dayKey||'')+' · '+t.symbol+' · '+usd(t.pl)});clnPts.push({x:i,y:cln});});
-    lineChart(eqCanvas,[{color:baseCol,width:2.2,points:actPts},{color:CSSV('--win-bright'),width:2,dash:[5,4],points:clnPts}],{height:240,fill:true});
-    noteHost.innerHTML='';
+    ordered.forEach((t,i)=>{act+=t.pl;if(!t.ruleBroken)cln+=t.pl;actPts.push({x:i,y:act,day:t.dayKey,lab:fmtDay(t.dayKey)+' · '+t.symbol+' · '+usd(t.pl)});clnPts.push({x:i,y:cln});});
+    const g=groupStats(inRange),mdd=maxDrawdown(inRange);
+    lab.textContent='Net P&L · '+R[3]+' · '+(STATE.filter==='ALL'?'all instruments':STATE.filter);
+    num.className='perfnum display '+signCls(g.total);
+    countBetween(num,shown==null?0:shown,g.total,x=>usd(x),shown==null?800:420);shown=g.total;
+    // the discipline story, as one line
+    disc.innerHTML='';
     const cost=cln-act;
-    if(ordered.some(t=>t.ruleBroken)){
-      noteHost.append(el('div',{class:cost>0.005?'warn':'note',style:'margin-top:12px'},
-        cost>0.005?`Breaking your rules has cost ${usd(cost)} ${days?'over this range':'so far'} — the clean curve ends at ${usd(cln)} vs your actual ${usd(act)}.`
-                  :`Your rule-breaks haven't dented the bottom line yet (${usd(cost)}) — but that's variance, not a green light. The behaviour is still the risk.`));
-    } else if(days&&!ordered.length){
-      noteHost.append(el('div',{class:'note',style:'margin-top:12px'},'No closed trades in this range — try a wider window.'));
-    }
+    if(!ordered.length)disc.append(el('span',{},'No closed trades in this range — try a wider window.'));
+    else if(!ordered.some(t=>t.ruleBroken))disc.append(el('span',{},'No rule breaks in this range — every trade followed your rules.'));
+    else if(cost>0.005)disc.append(el('span',{},'Following your rules: ',el('b',{class:signCls(cln)},usd(cln))),el('span',{class:'sep'},'·'),el('span',{},'Rule breaks cost ',el('b',{class:'neg'},usd(cost))));
+    else disc.append(el('span',{},'Following your rules: ',el('b',{class:signCls(cln)},usd(cln))),el('span',{class:'sep'},'·'),el('span',{},'Rule breaks haven\'t dented the bottom line yet ('+usd(cost)+') — that\'s variance, not a green light.'));
+    lineChart(cv,[{color:baseCol,width:2.2,points:actPts},{color:CSSV('--win-bright'),width:2,dash:[5,4],points:clnPts}],{height:240,fill:true,xTicks:true});
+    figs.innerHTML='';
+    figs.append(
+      figure('Trades',String(g.n)),
+      figure('Win rate',pct(g.winRate),g.winRate!=null&&g.winRate>=50?'pos':g.winRate!=null?'neg':''),
+      figure('Avg R',g.expR!=null?fmt(g.expR,2)+'R':'—',signCls(g.expR)),
+      figure('Max drawdown',usd(mdd),mdd<0?'neg':''));
   }
-  requestAnimationFrame(drawEq);
+  requestAnimationFrame(paint);
+}
+function figure(k,v,cls,sub){return el('div',{class:'f'},el('div',{class:'k'},k),el('div',{class:'v '+(cls||'')},v),sub?el('div',{class:'sub'},sub):null);}
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* "2026-11-13" → "13 Nov" (a statement-clock day key, so no timezone maths) */
+function fmtDay(key){if(!key)return'';const p=key.split('-');return (+p[2])+' '+MONTHS[+p[1]-1];}
+/* A trade time as "13 Nov · 10:35", adding the year only when it isn't this year.
+   openMs/closeMs are statement-clock values, not real timestamps, so they go
+   through shifted() and the getUTC* getters — never local date formatting. */
+function fmtStmt(ms){
+  const d=shifted(ms);if(!d)return'';
+  const y=d.getUTCFullYear(),cy=shifted(nowStmt()).getUTCFullYear();
+  return d.getUTCDate()+' '+MONTHS[d.getUTCMonth()]+(y!==cy?' '+y:'')+' · '+String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
 }
 
-/* ---- Insights › Distribution & mix ---- */
-function dashDistribution(root,list){
-  const g=groupStats(list);
-  root.append(el('div',{class:'eyebrow'},STATE.filter==='ALL'?'All instruments · pooled':STATE.filter));
-  const cards=el('div',{class:'cards',style:'margin-bottom:4px'});
-  cards.append(
-    statCard('Net P&L',usd(g.total),g.n+' trades',signCls(g.total)),
+/* ---- Insights › Overview: the all-time numbers, the mix, the rhythm ---- */
+function dashOverview(root,list){
+  const g=groupStats(list),st=streaks(list),mdd=maxDrawdown(list);
+  root.append(el('div',{class:'eyebrow'},STATE.filter==='ALL'?'All instruments · pooled · all time':STATE.filter+' · all time'));
+  const cards=el('div',{class:'cards ovcards'});
+  const lead=statCard('Net P&L',usd(g.total),g.n+' trades',signCls(g.total));lead.classList.add('lead');lead.querySelector('.v').classList.add('display');
+  cards.append(lead,
     statCard('Win rate',pct(g.winRate),g.wins+'W / '+g.losses+'L'),
     statCard('Profit factor',g.profitFactor===Infinity?'∞':fmt(g.profitFactor,2),'gross '+usd(g.gp)+' / '+usd(g.gl)),
     statCard('Expectancy',usd(g.expDollar),g.expR!=null?fmt(g.expR,2)+'R avg ('+g.rCount+' w/ R)':'R: n/a')
   );
   root.append(cards);
+  const more=el('div',{class:'panel',style:'margin-top:12px'});
+  more.append(el('div',{class:'figrow'},
+    figure('Avg win',usd(g.avgWin)),
+    figure('Avg loss',usd(g.avgLoss)),
+    figure('Gross',usd(g.gp)+' / '+usd(g.gl),'','profit / loss'),
+    figure('Streaks',st.maxWin+'W · '+st.maxLoss+'L','','best run / worst run'),
+    figure('Max drawdown',usd(mdd),mdd<0?'neg':'')));
+  root.append(more);
 
   root.append(el('h2',{class:'sec'},'Distribution & mix'));
   const twocol=el('div',{class:'grid two'});
@@ -1825,25 +2038,57 @@ function dashDistribution(root,list){
     const bySym=INSTRUMENTS.map(s=>({label:s,value:list.filter(t=>t.symbol===s).reduce((a,t)=>a+t.pl,0)})).filter(r=>list.some(t=>t.symbol===r.label));
     hbars(cmpBox,bySym,{money:true});
   });
+  root.append(el('h2',{class:'sec'},'Daily & monthly rhythm'));
+  renderRollups(root,list);
 }
 
-/* ---- Dashboard › Discipline ---- */
+/* ---- Insights › Discipline: lead with the finding, not four tables ---- */
 function dashDiscipline(root,list){
-  root.append(el('h2',{class:'sec'},'⚠ Discipline vs cost'));
   const clean=list.filter(t=>!t.ruleBroken),broken=list.filter(t=>t.ruleBroken);
   const rev=list.filter(t=>t.revenge),nonrev=list.filter(t=>!t.revenge);
-  const cmp=el('div',{class:'compare'});
-  cmp.append(disciplineCol('Rule-following',clean,'clean'),disciplineCol('Rule-breaking',broken,'broken'));
-  root.append(cmp);
-  const cmp2=el('div',{class:'compare',style:'margin-top:14px'});
-  cmp2.append(disciplineCol('Clean (no revenge)',nonrev,'clean'),disciplineCol('Revenge trades',rev,'broken'));
-  root.append(cmp2);
+  const sum=l=>l.reduce((a,t)=>a+t.pl,0);
+  const bPL=sum(broken),rPL=sum(rev);
+  root.append(discBlock(
+    !broken.length?'No rule breaks on record — every trade followed your rules.'
+      :bPL<-0.005?'Rule breaks have cost you '+usd(-bPL)+'.'
+      :'Your rule breaks haven\'t cost you money yet ('+usd(bPL)+') — that\'s variance, not a green light.',
+    'Every trade, split by whether it followed your rules. Both bars share one scale.',
+    [{label:'Following your rules',list:clean},{label:'Breaking them',list:broken}],true));
+  root.append(discBlock(
+    !rev.length?'No revenge trades on record.'
+      :rPL<-0.005?'Revenge trades have cost you '+usd(-rPL)+'.'
+      :'Your revenge trades haven\'t cost you money yet ('+usd(rPL)+') — that\'s variance, not a green light.',
+    'Trades opened inside the '+breakLabel()+' break after a stopout, against everything else.',
+    [{label:'Clean (no revenge)',list:nonrev},{label:'Revenge trades',list:rev}],false));
 
   root.append(el('h2',{class:'sec'},'Drawdown & recovery'));
   const ddHost=el('div');root.append(ddHost);renderDrawdown(ddHost,list);
 
   root.append(el('h2',{class:'sec'},'Pattern intelligence'));
   root.append(patternPanel(list));
+}
+/* A one-sentence finding over two labelled bars on a shared scale, each with its
+   trade count, win rate and average R alongside. */
+function discBlock(sentence,caption,rows,lead){
+  const box=el('section',{class:'panel disc'+(lead?' lead':'')});
+  box.append(el('p',{class:'discttl'},sentence),el('div',{class:'cap'},caption));
+  const stats=rows.map(r=>Object.assign({g:groupStats(r.list)},r));
+  const vals=stats.map(r=>r.g.total);
+  const lo=Math.min(0,...vals),hi=Math.max(0,...vals),span=(hi-lo)||1;
+  const wrap=el('div',{class:'cmpbars'});
+  stats.forEach(r=>{
+    const v=r.g.total,a=(Math.min(v,0)-lo)/span*100,b=(Math.max(v,0)-lo)/span*100;
+    const fill=el('div',{class:'cfill '+(v>=0?'up':'down')});fill.style.left=a+'%';fill.style.width=Math.max(.6,b-a)+'%';
+    const track=el('div',{class:'ctrack'},fill);
+    if(lo<0&&hi>0){const z=el('div',{class:'czero'});z.style.left=((0-lo)/span*100)+'%';track.append(z);}
+    wrap.append(el('div',{class:'cmprow'},
+      el('div',{class:'clab'},r.label),
+      track,
+      el('div',{class:'cval num '+signCls(v)},r.g.n?usd(v):'—'),
+      el('div',{class:'cmeta'},r.g.n+' trade'+(r.g.n!==1?'s':'')+' · '+(r.g.winRate==null?'—':pct(r.g.winRate))+' win · '+(r.g.expR!=null?fmt(r.g.expR,2)+'R avg':'no R'))));
+  });
+  box.append(wrap);
+  return box;
 }
 
 /* ---- Dashboard › Timing ---- */
@@ -1860,26 +2105,6 @@ function dashTiming(root,list){
   });
 }
 
-/* ---- Dashboard › Calendar ---- */
-function dashCalendar(root,list){
-  root.append(el('h2',{class:'sec'},'Calendar'));
-  const calBox=el('div',{class:'chartbox'});const calHost=el('div');calBox.append(calHost);root.append(calBox);
-  renderCalendar(calHost,list);
-}
-
-function disciplineCol(title,list,cls){
-  const g=groupStats(list);
-  const col=el('div',{class:'col '+cls});
-  col.append(el('h4',{},title+'  ',el('span',{class:'pill'},list.length+' trades')));
-  col.append(
-    el('div',{class:'kv'},el('span',{class:'k'},'Total P&L'),el('span',{class:'v '+signCls(g.total)},usd(g.total))),
-    el('div',{class:'kv'},el('span',{class:'k'},'Win rate'),el('span',{class:'v'},pct(g.winRate))),
-    el('div',{class:'kv'},el('span',{class:'k'},'Expectancy / trade'),el('span',{class:'v '+signCls(g.expDollar)},usd(g.expDollar))),
-    el('div',{class:'kv'},el('span',{class:'k'},'Avg R'),el('span',{class:'v'},g.expR!=null?fmt(g.expR,2)+'R':'—'))
-  );
-  return col;
-}
-
 function patternPanel(list){
   const wrap=el('div',{class:'grid',style:'gap:14px'});
   const syms=STATE.filter==='ALL'?INSTRUMENTS:[STATE.filter];
@@ -1892,9 +2117,9 @@ function patternPanel(list){
     const setupRows=SETUPS.map(s=>{const m=sub.filter(t=>(t.setups||[]).includes(s));return m.length?{label:s,value:m.reduce((a,t)=>a+t.pl,0),n:m.length}:null;}).filter(Boolean).sort((a,b)=>b.value-a.value);
     const sessRows=SESSIONS.map(s=>{const m=sub.filter(t=>t.session===s);return m.length?{label:s+' ('+m.length+')',value:m.reduce((a,t)=>a+t.pl,0)}:null;}).filter(Boolean).sort((a,b)=>b.value-a.value);
     const cols=el('div',{class:'grid',style:'grid-template-columns:1fr 1fr;gap:18px'});
-    const c1=el('div');c1.append(el('div',{class:'eyebrow'},'By setup'));
+    const c1=el('div');c1.append(el('div',{class:'fld'},'By setup'));
     if(setupRows.length)hbars(c1,setupRows.map(r=>({label:r.label+' ('+r.n+')',value:r.value})),{money:true});else c1.append(el('div',{class:'faint',style:'font-size:.75rem'},'Tag setups on trades to rank them.'));
-    const c2=el('div');c2.append(el('div',{class:'eyebrow'},'By session'));
+    const c2=el('div');c2.append(el('div',{class:'fld'},'By session'));
     if(sessRows.length)hbars(c2,sessRows,{money:true});
     cols.append(c1,c2);box.append(cols);
     wrap.append(box);
@@ -1904,10 +2129,12 @@ function patternPanel(list){
 }
 
 /* heat colour for a P&L value scaled against a max magnitude */
-function heatColor(v,max){
-  if(v===0||max===0)return '#161619';
+function heatColor(v,max,wide){
+  if(v===0||max===0)return wide?'transparent':'#161619';
   const a=Math.min(1,Math.abs(v)/max);
-  const o=(0.14+a*0.48).toFixed(3);   // cap ~0.62 so the day number stays legible
+  // the heatmap has no numbers on it, so it can use the full range — and a square-root
+  // curve, so a weak cell is still clearly not an empty one. The calendar caps ~0.62 so its numbers stay legible.
+  const o=(wide?0.24+Math.sqrt(a)*0.6:0.14+a*0.48).toFixed(3);
   if(v>0)return `rgba(112,168,136,${o})`;
   return `rgba(191,110,102,${o})`;
 }
@@ -1933,9 +2160,9 @@ function renderCalendar(host,listArg,key){
 
   const head=el('div',{class:'calhead'});
   head.append(
-    el('button',{class:'btn sm',onclick:()=>{STATE.calMonths[key]={y:m===0?y-1:y,m:m===0?11:m-1};renderCalendar(host,listArg,key);}},'‹'),
+    el('button',{class:'btn sm',onclick:()=>{STATE.calMonths[key]={y:m===0?y-1:y,m:m===0?11:m-1};renderCalendar(host,listArg,key);},'aria-label':'Previous month'},icon('chevL')),
     el('div',{class:'mname'},new Date(Date.UTC(y,m,1)).toLocaleString('en-US',{month:'long',year:'numeric',timeZone:'UTC'})),
-    el('button',{class:'btn sm',onclick:()=>{STATE.calMonths[key]={y:m===11?y+1:y,m:m===11?0:m+1};renderCalendar(host,listArg,key);}},'›'),
+    el('button',{class:'btn sm',onclick:()=>{STATE.calMonths[key]={y:m===11?y+1:y,m:m===11?0:m+1};renderCalendar(host,listArg,key);},'aria-label':'Next month'},icon('chevR')),
     el('button',{class:'btn sm ghost',onclick:()=>{STATE.calMonths[key]=null;renderCalendar(host,listArg,key);}},'Latest'),
     el('span',{style:'margin-left:auto;font-family:var(--mono);font-weight:600',class:signCls(mTot)},usd(mTot))
   );
@@ -1983,10 +2210,10 @@ function renderCalendar(host,listArg,key){
   if(weekendHits.length)host.append(el('div',{class:'faint',style:'font-size:.6875rem;margin-top:8px'},'Weekend trades (off-grid): '+weekendHits.map(w=>w.dkey+' '+usd(w.rec.pl)+' · '+w.rec.n+'t').join('  ·  ')));
 
   if(showCap){
-    host.append(el('div',{class:'faint',style:'font-size:.6875rem;margin-top:10px'},'Gold ring = day breached the −'+amt(CAP)+' floor · click any day for its trades & notes.'));
+    host.append(el('div',{class:'cap',style:'margin-top:10px'},'Gold ring = day breached the −'+amt(CAP)+' floor · select any day for its trades & notes.'));
     const breaches=monthDays.filter(([,v])=>v.pl<-CAP).map(([k,v])=>({date:k,pl:v.pl,n:v.n,saved:(-CAP)-v.pl})).sort((a,b)=>b.saved-a.saved);
     if(breaches.length){
-      host.append(el('div',{class:'eyebrow',style:'margin-top:16px'},'Cap-breach days · '+breaches.length));
+      host.append(el('div',{class:'fld',style:'margin-top:18px'},'Cap-breach days · '+breaches.length));
       const wrap=el('div',{class:'tablewrap'});const table=el('table');
       const thead=el('tr');thead.append(el('th',{},'Date'),el('th',{class:'r'},'Actual'),el('th',{class:'r'},'Trades'),el('th',{class:'r'},'Saved by cap'));
       table.append(el('thead',{},thead));
@@ -2006,8 +2233,8 @@ function renderCalendarDay(host,dayKey,list,key){
   const CAP=capFloorVal();
   const head=el('div',{class:'calhead'});
   head.append(
-    el('button',{class:'btn sm',onclick:()=>{STATE.calDetail[key]=null;renderCalendar(host,list,key);}},'‹ Calendar'),
-    el('div',{class:'mname',style:'font-family:var(--mono)'},dayKey),
+    el('button',{class:'btn sm',onclick:()=>{STATE.calDetail[key]=null;renderCalendar(host,list,key);}},icon('chevL'),'Calendar'),
+    el('div',{class:'mname'},WD[new Date(dayKey+'T00:00:00Z').getUTCDay()]+' '+fmtDay(dayKey)+' '+dayKey.slice(0,4)),
     el('span',{style:'margin-left:auto;font-family:var(--mono);font-weight:600',class:signCls(pl)},usd(pl))
   );
   host.append(head);
@@ -2018,7 +2245,7 @@ function renderCalendarDay(host,dayKey,list,key){
     card.append(el('div',{class:'ph'},
       el('span',{class:'pill '+t.symCls},t.symbol),
       el('span',{class:'pill '+(t.type==='buy'?'win':'loss')},t.type),
-      el('span',{class:'meta'},(t.openTime||'')+' · '+t.session),
+      el('span',{class:'meta'},(t.openMs!=null?fmtStmt(t.openMs):(t.openTime||''))+' · '+t.session),
       el('span',{class:'num '+signCls(t.pl),style:'margin-left:auto;font-weight:600'},usd(t.pl))));
     if(t.revenge||t.ruleBroken){
       const f=el('div',{style:'margin-top:6px'});
@@ -2031,7 +2258,7 @@ function renderCalendarDay(host,dayKey,list,key){
     card.append(ta);
     const st=el('span',{class:'faint',style:'font-size:.6875rem'});
     card.append(el('div',{style:'display:flex;gap:9px;align-items:center;margin-top:8px'},
-      el('button',{class:'btn sm primary',onclick:async()=>{t.note=ta.value;await persistEnrichment(t);st.textContent='Saved to trade notes';toast('Note saved','good');}},'Save note'),
+      el('button',{class:'btn sm',onclick:async()=>{t.note=ta.value;await persistEnrichment(t);st.textContent='Saved to trade notes';toast('Note saved','good');}},'Save note'),
       el('button',{class:'btn sm ghost',onclick:()=>openTrade(t.ticket)},'Open trade →'),
       st));
     host.append(card);
@@ -2039,33 +2266,51 @@ function renderCalendarDay(host,dayKey,list,key){
 }
 
 function renderHeatmap(host,listArg){
-  host.innerHTML='';
+  host.innerHTML='';host.classList.add('heathost');
   const list=listArg||visibleTrades();
   const order=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const cell={};let max=0;
-  list.forEach(t=>{if(t.hour==null||!t.weekday)return;const k=t.weekday+'|'+t.hour;cell[k]=(cell[k]||0)+t.pl;max=Math.max(max,Math.abs(cell[k]));});
+  const cell={},cnt={};let max=0;
+  list.forEach(t=>{if(t.hour==null||!t.weekday)return;const k=t.weekday+'|'+t.hour;cell[k]=(cell[k]||0)+t.pl;cnt[k]=(cnt[k]||0)+1;max=Math.max(max,Math.abs(cell[k]));});
   // hour range present
   const hoursPresent=[...new Set(list.filter(t=>t.hour!=null).map(t=>t.hour))];
   const hMin=hoursPresent.length?Math.min(...hoursPresent):8, hMax=hoursPresent.length?Math.max(...hoursPresent):20;
   const hours=[];for(let h=hMin;h<=hMax;h++)hours.push(h);
   const wrap=el('div',{class:'heatwrap'});
   const grid=el('div',{class:'heatgrid'});
-  grid.style.gridTemplateColumns=`40px repeat(${hours.length},1fr)`;
+  grid.style.gridTemplateColumns=`40px repeat(${hours.length},minmax(18px,1fr))`;
   grid.append(el('div',{}));
   hours.forEach(h=>grid.append(el('div',{class:'hh'},h)));
   order.filter(d=>list.some(t=>t.weekday===d)).forEach(d=>{
     grid.append(el('div',{class:'rl'},d));
     hours.forEach(h=>{
-      const v=cell[d+'|'+h]||0;
-      const c=el('div',{class:'heatcell'});
-      c.style.background=heatColor(v,max);
-      if(v!==0)c.title=d+' '+h+':00 — '+usd(v);
+      const k=d+'|'+h,v=cell[k]||0;
+      const c=el('div',{class:'heatcell'+(cnt[k]?' has':'')});
+      c.style.background=heatColor(v,max,true);
+      if(cnt[k]){c.tabIndex=0;c.dataset.k=k;c.setAttribute('aria-label',d+' '+h+':00 — '+usd(v)+' over '+cnt[k]+' trade'+(cnt[k]>1?'s':''));}
       grid.append(c);
     });
   });
   wrap.append(grid);host.append(wrap);
+  // the value used to live only in a title attribute, which touch screens can't reach
+  const tip=el('div',{class:'charttip',role:'status'});host.append(tip);
+  let sel=null;
+  function show(c){
+    if(sel&&sel!==c)sel.classList.remove('sel');
+    if(!c||!c.dataset.k){sel=null;tip.classList.remove('on');return;}
+    sel=c;c.classList.add('sel');
+    const [d,h]=c.dataset.k.split('|'),v=cell[c.dataset.k],n=cnt[c.dataset.k];
+    tip.innerHTML='<span class="tl">'+d+' '+h+':00 · '+n+' trade'+(n>1?'s':'')+'</span><span class="'+(v>=0?'pos':'neg')+'">'+usd(v)+'</span>';
+    const hr=host.getBoundingClientRect(),cr=c.getBoundingClientRect();
+    tip.style.left=Math.min(hr.width-60,Math.max(60,cr.left-hr.left+cr.width/2))+'px';tip.style.top=(cr.top-hr.top-2)+'px';
+    tip.classList.add('on');
+  }
+  const hide=()=>show(null);
+  // a finger keeps its pointer on the cell it went down on, so read what is under it now
+  chartHover(grid,e=>{const n=document.elementFromPoint(e.clientX,e.clientY);show(n&&n.closest?n.closest('.heatcell'):null);},hide);
+  grid.addEventListener('focusin',e=>show(e.target.closest('.heatcell')));
+  grid.addEventListener('focusout',hide);
   host.append(el('div',{class:'legend',style:'margin-top:8px'},
-    el('span',{},'Net P&L by weekday × open hour'),
+    el('span',{},'Net P&L by weekday × open hour · tap or hover a cell'),
     (function(){const s=el('span',{},el('i',{}),'profit');s.firstChild.style.background='rgba(112,168,136,.7)';return s;})(),
     (function(){const s=el('span',{},el('i',{}),'loss');s.firstChild.style.background='rgba(191,110,102,.7)';return s;})()
   ));
@@ -2089,7 +2334,7 @@ function renderDrawdown(host,listArg){
    TRADE LOG
    ============================================================ */
 const LOG_COLS=[
-  {k:'openTime',t:'Open',r:false,v:t=>t.openTime},
+  {k:'openTime',t:'Open',r:false,v:t=>t.openMs!=null?fmtStmt(t.openMs):(t.openTime||'—')},
   {k:'symbol',t:'Symbol',r:false,v:t=>t.symbol},
   {k:'type',t:'Dir',r:false,v:t=>t.type},
   {k:'volume',t:'Lots',r:true,v:t=>fmt(t.volume,2)},
@@ -2102,7 +2347,7 @@ const LOG_COLS=[
 function renderLog(){
   const root=$('#page-log');root.innerHTML='';
   const all=visibleTrades();
-  if(!all.length){if(emptyForFilter(root))return;root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),el('div',{},'Import your MT5 statement to begin.'),el('div',{style:'margin-top:14px'},el('button',{class:'btn primary',onclick:()=>go('import')},'Go to Import'))));return;}
+  if(!all.length){if(emptyForFilter(root))return;root.append(el('div',{class:'empty'},el('div',{class:'big'},'No trades yet'),el('div',{},'Import your MT5 statement to begin.'),el('div',{style:'margin-top:14px'},el('button',{class:'btn primary',onclick:()=>go('import')},'Import a statement'))));return;}
 
   // screenshot drop (auto-filed by ticket in filename)
   const sdz=el('div',{class:'dropzone drag-only',style:'margin-bottom:14px;padding:16px'},'Drop chart screenshots here — auto-filed to a trade when the ticket number is in the filename');
@@ -2113,8 +2358,8 @@ function renderLog(){
 
   // filters bar
   const f=STATE.logFilters;
-  const bar=el('div',{class:'panel',style:'margin-bottom:14px'});
-  const row=el('div',{class:'row'});
+  const bar=el('div',{class:'panel logbar',style:'margin-bottom:14px'});
+  const row=el('div',{class:'row logfilters'+(STATE.logFiltersOpen?' open':''),id:'logFilters'});
   const sess=el('select',{onchange:e=>{f.session=e.target.value||null;renderLog();}});sess.append(el('option',{value:''},'All sessions'),...SESSIONS.map(s=>el('option',{value:s,selected:f.session===s?'':null},s)));
   const setup=el('select',{onchange:e=>{f.setup=e.target.value||null;renderLog();}});setup.append(el('option',{value:''},'All setups'),...SETUPS.map(s=>el('option',{value:s,selected:f.setup===s?'':null},s)));
   const oc=el('select',{onchange:e=>{f.outcome=e.target.value||null;renderLog();}});oc.append(el('option',{value:''},'Win & loss'),el('option',{value:'win',selected:f.outcome==='win'?'':null},'Wins'),el('option',{value:'loss',selected:f.outcome==='loss'?'':null},'Losses'));
@@ -2122,11 +2367,16 @@ function renderLog(){
   // the stacked phone layout has no column headers to sort by, so it gets a control of its own
   const SORTS=[['openTime:-1','Newest first'],['openTime:1','Oldest first'],['pl:-1','Biggest win'],['pl:1','Biggest loss'],['R:-1','Highest R']];
   const curSort=(STATE.sortKey==='openMs'?'openTime':STATE.sortKey)+':'+STATE.sortDir;
-  const so=el('select',{onchange:e=>{const[k,dir]=e.target.value.split(':');STATE.sortKey=k;STATE.sortDir=+dir;renderLog();}});
+  const so=el('select',{'aria-label':'Sort trades',onchange:e=>{const[k,dir]=e.target.value.split(':');STATE.sortKey=k;STATE.sortDir=+dir;renderLog();}});
   if(!SORTS.some(([v])=>v===curSort))so.append(el('option',{value:curSort,selected:''},'Custom'));
   SORTS.forEach(([v,l])=>so.append(el('option',{value:v,selected:v===curSort?'':null},l)));
-  const sortFld=wrapFld('Sort',so);sortFld.className='only-phone';
-  row.append(wrapFld('Session',sess),wrapFld('Setup',setup),wrapFld('Outcome',oc),wrapFld('Discipline',rb),sortFld);
+  const active=[f.session,f.setup,f.outcome,f.rule].filter(Boolean).length;
+  const fbtn=el('button',{class:'btn filterbtn'+(active?' active':''),'aria-controls':'logFilters','aria-expanded':String(!!STATE.logFiltersOpen),onclick:()=>{
+    STATE.logFiltersOpen=!STATE.logFiltersOpen;row.classList.toggle('open',STATE.logFiltersOpen);fbtn.setAttribute('aria-expanded',String(STATE.logFiltersOpen));}},
+    icon('filter'),'Filter',active?el('span',{class:'count','aria-label':active+' active'},String(active)):null);
+  bar.append(el('div',{class:'logtop'},fbtn,so));
+  row.append(wrapFld('Session',sess),wrapFld('Setup',setup),wrapFld('Outcome',oc),wrapFld('Discipline',rb));
+  if(active)row.append(el('div',{class:'clearf'},el('button',{class:'linkbtn',onclick:()=>{STATE.logFilters={};renderLog();}},'Clear filters')));
   bar.append(row);
   root.append(bar);
 
@@ -2138,7 +2388,7 @@ function renderLog(){
 
   list.sort((a,b)=>{const k=STATE.sortKey;let av=a[k],bv=b[k];if(k==='openTime'){av=a.openMs;bv=b.openMs;}if(av==null)av=-Infinity;if(bv==null)bv=-Infinity;if(typeof av==='string')return STATE.sortDir*av.localeCompare(bv);return STATE.sortDir*(av-bv);});
 
-  root.append(el('div',{class:'eyebrow'},list.length+' of '+all.length+' trades · select one for detail'));
+  root.append(el('div',{class:'cap',style:'margin-bottom:10px'},list.length+' of '+all.length+' trades · select one for detail'));
   const wrap=el('div',{class:'tablewrap'});
   const table=el('table',{class:'logtable'});
   const thead=el('tr');
@@ -2159,15 +2409,21 @@ function renderLog(){
       tr.append(cell);
     });
     const flags=el('td',{'data-k':'flags'});
-    if(t.revenge)flags.append(el('span',{class:'pill flag'},'revenge'));
-    t.violations.filter(v=>v.hard&&v.code!=='revenge').slice(0,2).forEach(v=>flags.append(el('span',{class:'pill flag'},v.code)));
-    if((t.setups||[]).length)flags.append(el('span',{class:'pill'},(t.setups.length)+' tag'+(t.setups.length>1?'s':'')));
+    const fl=[];   // [text, class, full label]
+    if(t.revenge)fl.push(['revenge','flag','Revenge']);
+    t.violations.filter(v=>v.hard&&v.code!=='revenge').forEach(v=>fl.push([v.code,'flag',v.label]));
+    if((t.setups||[]).length)fl.push([(t.setups.length)+' tag'+(t.setups.length>1?'s':''),'',t.setups.join(', ')]);
+    // two pills and a count, so the column can't run off the edge of a narrower screen
+    fl.slice(0,2).forEach(([txt,cls,full])=>flags.append(el('span',{class:'pill '+cls,title:full},txt)));
+    if(fl.length>2)flags.append(el('span',{class:'pill more',title:fl.slice(2).map(x=>x[2]).join(' · ')},'+'+(fl.length-2)));
     tr.append(flags);
     tb.append(tr);
   });
   table.append(tb);wrap.append(table);root.append(wrap);
 }
-function wrapFld(label,node){return el('div',{},el('label',{class:'fld'},label),node);}
+let fldSeq=0;
+function wrapFld(label,node){if(!node.id)node.id='fld'+(++fldSeq);return el('div',{},el('label',{class:'fld',for:node.id},label),node);}
+function wideFld(label,node){const d=wrapFld(label,node);d.className='wide';return d;}
 
 /* ============================================================
    TRADE DETAIL MODAL  (+ screenshots)
@@ -2192,14 +2448,14 @@ async function openTrade(ticket){
   m.append(el('div',{class:'mhead'},
     el('h3',{},el('span',{class:'pill '+t.symCls},t.symbol),' ',el('span',{class:'pill '+(t.type==='buy'?'win':'loss')},t.type),' ',el('span',{class:'muted',style:'font-weight:400;font-size:.8125rem'},'#'+t.ticket)),
     el('span',{class:'num '+signCls(t.pl),style:'font-size:1.125rem;font-weight:600'},usd(t.pl)),
-    el('button',{class:'closeX','aria-label':'Close',onclick:closeModal},'×')));
+    el('button',{class:'closeX','aria-label':'Close',onclick:closeModal},icon('x'))));
   const b=el('div',{class:'mbody'});
 
   // parsed numbers
-  const facts=el('div',{class:'panel',style:'margin-bottom:16px'});
+  const facts=el('div',{class:'inset',style:'margin-bottom:16px;padding:6px 16px'});
   const grid=el('div',{class:'grid',style:'grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 28px'});
   const rows=[
-    ['Open',t.openTime],['Close',t.closeTime],
+    ['Open',t.openMs!=null?fmtStmt(t.openMs):t.openTime],['Close',t.closeMs!=null?fmtStmt(t.closeMs):t.closeTime],
     ['Open price',fmt(t.openPrice,info.dp)],['Close price',fmt(t.closePrice,info.dp)],
     ['S/L',t.sl!=null?fmt(t.sl,info.dp):'—'],['T/P',t.tp!=null?fmt(t.tp,info.dp):'—'],
     ['Volume',fmt(t.volume,2)+' lots'],['Duration',t.durationMin==null?'—':(t.durationMin>=60?Math.floor(t.durationMin/60)+'h '+(t.durationMin%60)+'m':t.durationMin+'m')],
@@ -2214,13 +2470,13 @@ async function openTrade(ticket){
   // violations
   if(t.violations.length){
     const vbox=el('div',{style:'margin-bottom:16px'});
-    t.violations.forEach(v=>vbox.append(el('span',{class:'pill '+(v.hard?'flag':'soft'),style:'margin:0 6px 6px 0'},(v.hard?'⚠ ':'• ')+v.label)));
+    t.violations.forEach(v=>vbox.append(el('span',{class:'pill '+(v.hard?'flag':'soft'),style:'margin:0 6px 6px 0'},v.hard?icon('alert'):null,' '+v.label)));
     b.append(vbox);
-  } else b.append(el('div',{class:'pill win',style:'margin-bottom:16px'},'✓ Clean trade — all rules followed'));
+  } else b.append(el('div',{class:'pill win',style:'margin-bottom:16px'},icon('check'),' Clean trade — all rules followed'));
 
   // enrichment form — edits go to a draft and only reach the trade on Save, so Cancel really cancels
   const d={setups:(t.setups||[]).slice(),session:t.session,emotion:t.emotion||'',plannedR:t.plannedR??null,actualR:t.actualR??null,riskUSD:t.riskUSD??null,note:t.note||''};
-  b.append(el('div',{class:'eyebrow'},'Setups (price action)'));
+  b.append(el('label',{class:'fld'},'Setups (price action)'));
   const tags=el('div',{style:'margin-bottom:14px'});
   SETUPS.forEach(s=>{const on=d.setups.includes(s);const chip=el('button',{class:'tag-chip'+(on?' on':''),'aria-pressed':String(on),onclick:()=>{const i=d.setups.indexOf(s);if(i<0)d.setups.push(s);else d.setups.splice(i,1);chip.classList.toggle('on',i<0);chip.setAttribute('aria-pressed',String(i<0));}},s);tags.append(chip);});
   b.append(tags);
@@ -2243,8 +2499,9 @@ async function openTrade(ticket){
   b.append(note);
 
   // screenshots
-  b.append(el('div',{class:'eyebrow',style:'margin-top:16px'},'Chart screenshots'));
-  const dz=el('div',{class:'dropzone'},'Drag & drop, click to choose, or paste (Ctrl/Cmd+V) chart images here');
+  b.append(el('label',{class:'fld',style:'margin-top:16px'},'Chart screenshots'));
+  const dz=el('div',{class:'dropzone',tabindex:'0',role:'button'},'Drag & drop, click to choose, or paste (Ctrl/Cmd+V) chart images here');
+  dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fileIn.click();}});
   const fileIn=el('input',{type:'file',accept:'image/*',multiple:'',style:'display:none',onchange:e=>{[...e.target.files].forEach(f=>addImage(ticket,f));e.target.value='';}});
   dz.addEventListener('click',()=>fileIn.click());
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('hot');});
@@ -2254,13 +2511,13 @@ async function openTrade(ticket){
   const shots=el('div',{class:'shots',id:'shotsArea'});b.append(shots);
   renderShots(ticket,shots);
 
-  // actions
-  const act=el('div',{style:'display:flex;gap:10px;margin-top:20px'});
+  // actions — a footer that stays in view (sticky in the dialog, a fixed row under the scrolling body in the sheet)
+  b.classList.add('hasfoot');
+  const act=el('div',{class:'mfoot'});
   act.append(el('button',{class:'btn primary',onclick:async()=>{Object.assign(t,d);await persistEnrichment(t);const stored=await idbGet('trades',ticket);const i=STATE.trades.findIndex(x=>x.ticket===ticket);if(i>=0)STATE.trades[i]=enrich(stored||t);runRules(STATE.trades);toast('Trade saved','good');closeModal();go(currentPage);}},'Save'),
     el('button',{class:'btn ghost',onclick:closeModal},'Cancel'));
-  b.append(act);
 
-  m.append(b);
+  m.append(b,act);
   presentModal();
   $('#overlay').scrollTop=0;
 }
@@ -2273,7 +2530,7 @@ async function renderShots(ticket,container){
     const url=URL.createObjectURL(im.blob);
     const card=el('div',{class:'shot'},
       el('img',{src:url,onclick:()=>window.open(url,'_blank')}),
-      el('button',{class:'del',onclick:async(e)=>{e.stopPropagation();await idbDel('images',im.id);renderShots(ticket,container);toast('Screenshot removed');}},'✕'));
+      el('button',{class:'del',onclick:async(e)=>{e.stopPropagation();await idbDel('images',im.id);renderShots(ticket,container);toast('Screenshot removed');},'aria-label':'Remove screenshot'},icon('x')));
     container.append(card);
   });
 }
@@ -2344,54 +2601,76 @@ function calcLots(sym,riskUSD,stop,usdjpy,pointValue){
 
 let formPlan=null;
 function blankPlan(){return{symbol:INSTRUMENTS[0]||'',dir:'buy',entry:null,sl:null,tp:null,setups:[],session:'London',plannedR:null,riskUSD:RULES.maxRisk,note:''};}
+const PLAN_TABS=[['size','Position size'],['plan','Plan'],['watch','Watchlist']];
 function renderPlan(){
   const root=$('#page-plan');root.innerHTML='';
   if(!INSTRUMENTS.length){
-    root.append(el('div',{class:'note',style:'margin-bottom:14px'},'No instruments yet — import an MT5 statement, or list what you trade under Import → Your trading rules, and the planner, watchlist and calculator will pick them up.'));
+    root.append(el('div',{class:'note',style:'margin-bottom:14px'},'No instruments yet — import an MT5 statement, or list what you trade under Rules & Levels, and the planner, watchlist and calculator will pick them up.'));
   }
+  // the calculator is the tool needed fastest, so it comes first and is the default
+  if(!PLAN_TABS.some(t=>t[0]===STATE.planTab))STATE.planTab='size';
+  const bar=el('div',{class:'subtabs',role:'tablist','aria-label':'Plan & Tools'});
+  PLAN_TABS.forEach(([k,l])=>bar.append(el('button',{class:STATE.planTab===k?'on':'',role:'tab','aria-selected':String(STATE.planTab===k),onclick:()=>{if(STATE.planTab!==k){STATE.planTab=k;paint();}}},l)));
+  root.append(bar);
+  const body=el('div',{class:'tabbody'});root.append(body);
+  function paint(){
+    [...bar.children].forEach((b,i)=>{const on=PLAN_TABS[i][0]===STATE.planTab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));});
+    body.innerHTML='';
+    body.classList.remove('fadein');void body.offsetWidth;body.classList.add('fadein');
+    ({size:planSize,plan:planPlans,watch:planWatch})[STATE.planTab](body);
+  }
+  paint();
+}
+
+/* ---- Plan & Tools › Plan: the pre-trade plan, adherence, and the plans themselves ---- */
+function planPlans(root){
   if(!formPlan)formPlan=blankPlan();
   if(!formPlan.symbol&&INSTRUMENTS.length)formPlan.symbol=INSTRUMENTS[0];
-
-  /* ---- pre-trade plan builder ---- */
-  root.append(el('div',{class:'eyebrow'},'Pre-trade plan — log the trade before you take it'));
+  root.append(el('h2',{class:'sec'},'Pre-trade plan'),el('div',{class:'cap'},'Log the trade before you take it.'));
   const form=el('div',{class:'panel',style:'margin-bottom:18px'});
+  const ph=dp=>dp===3?'214.300':dp===5?'1.08350':'4450.0';
+  const entryIn=el('input',{type:'number',step:'any',inputmode:'decimal',value:formPlan.entry??'',placeholder:ph(symInfo(formPlan.symbol).dp),oninput:e=>{formPlan.entry=e.target.value===''?null:+e.target.value;updRR();}});
   const r1=el('div',{class:'row',style:'margin-bottom:12px'});
-  const symSel=el('select',{onchange:e=>{formPlan.symbol=e.target.value;renderPlan();}});INSTRUMENTS.forEach(s=>symSel.append(el('option',{value:s,selected:formPlan.symbol===s?'':null},s)));
+  // changing the symbol only changes the entry hint and the preview — no full re-render
+  const symSel=el('select',{onchange:e=>{formPlan.symbol=e.target.value;entryIn.placeholder=ph(symInfo(formPlan.symbol).dp);updRR();}});INSTRUMENTS.forEach(s=>symSel.append(el('option',{value:s,selected:formPlan.symbol===s?'':null},s)));
   const dirSel=el('select',{onchange:e=>formPlan.dir=e.target.value});['buy','sell'].forEach(s=>dirSel.append(el('option',{value:s,selected:formPlan.dir===s?'':null},s)));
   const sessSel=el('select',{onchange:e=>formPlan.session=e.target.value});SESSIONS.forEach(s=>sessSel.append(el('option',{value:s,selected:formPlan.session===s?'':null},s)));
   r1.append(wrapFld('Symbol',symSel),wrapFld('Direction',dirSel),wrapFld('Session',sessSel));
   form.append(r1);
   const r2=el('div',{class:'row',style:'margin-bottom:12px'});
-  const dp=symInfo(formPlan.symbol).dp;
   r2.append(
-    wrapFld('Entry',el('input',{type:'number',step:'any',value:formPlan.entry??'',placeholder:dp===3?'214.300':dp===5?'1.08350':'4450.0',oninput:e=>formPlan.entry=e.target.value===''?null:+e.target.value})),
-    wrapFld('Stop loss',el('input',{type:'number',step:'any',value:formPlan.sl??'',oninput:e=>formPlan.sl=e.target.value===''?null:+e.target.value})),
-    wrapFld('Take profit',el('input',{type:'number',step:'any',value:formPlan.tp??'',oninput:e=>formPlan.tp=e.target.value===''?null:+e.target.value}))
+    wrapFld('Entry',entryIn),
+    wrapFld('Stop loss',el('input',{type:'number',step:'any',inputmode:'decimal',value:formPlan.sl??'',oninput:e=>{formPlan.sl=e.target.value===''?null:+e.target.value;updRR();}})),
+    wrapFld('Take profit',el('input',{type:'number',step:'any',inputmode:'decimal',value:formPlan.tp??'',oninput:e=>{formPlan.tp=e.target.value===''?null:+e.target.value;updRR();}}))
   );
   form.append(r2);
   const r3=el('div',{class:'row',style:'margin-bottom:12px'});
   r3.append(
-    wrapFld('Planned R',el('input',{type:'number',step:'0.1',value:formPlan.plannedR??'',oninput:e=>formPlan.plannedR=e.target.value===''?null:+e.target.value})),
-    wrapFld('Risk ('+CURSYM.trim()+')',el('input',{type:'number',step:'0.01',value:formPlan.riskUSD??'',oninput:e=>formPlan.riskUSD=e.target.value===''?null:+e.target.value}))
+    wrapFld('Planned R',el('input',{type:'number',step:'0.1',inputmode:'decimal',value:formPlan.plannedR??'',oninput:e=>formPlan.plannedR=e.target.value===''?null:+e.target.value})),
+    wrapFld('Risk ('+CURSYM.trim()+')',el('input',{type:'number',step:'0.01',inputmode:'decimal',value:formPlan.riskUSD??'',oninput:e=>formPlan.riskUSD=e.target.value===''?null:+e.target.value}))
   );
   form.append(r3);
   form.append(el('label',{class:'fld'},'Setups'));
   const tagWrap=el('div',{style:'margin-bottom:12px'});
-  SETUPS.forEach(s=>{const on=formPlan.setups.includes(s);tagWrap.append(el('button',{class:'tag-chip'+(on?' on':''),onclick:()=>{const i=formPlan.setups.indexOf(s);if(i<0)formPlan.setups.push(s);else formPlan.setups.splice(i,1);renderPlan();}},s));});
+  // chips toggle in place, as in the trade detail
+  SETUPS.forEach(s=>{const on=formPlan.setups.includes(s);const chip=el('button',{class:'tag-chip'+(on?' on':''),'aria-pressed':String(on),onclick:()=>{const i=formPlan.setups.indexOf(s);if(i<0)formPlan.setups.push(s);else formPlan.setups.splice(i,1);chip.classList.toggle('on',i<0);chip.setAttribute('aria-pressed',String(i<0));}},s);tagWrap.append(chip);});
   form.append(tagWrap);
-  form.append(el('label',{class:'fld'},'Thesis / level'));
   const noteA=el('textarea',{placeholder:'e.g. H1 bullish BOS, price sweeping SSL into demand at 214.00 breaker — long on 5m confirmation.',oninput:e=>formPlan.note=e.target.value});noteA.value=formPlan.note||'';
-  form.append(noteA);
-  // auto risk:reward preview
-  if(formPlan.entry!=null&&formPlan.sl!=null&&formPlan.tp!=null){
-    const risk=Math.abs(formPlan.entry-formPlan.sl),rew=Math.abs(formPlan.tp-formPlan.entry);
-    if(risk>0)form.append(el('div',{class:'note',style:'margin-top:12px'},`Planned reward:risk ≈ ${fmt(rew/risk,2)}R  (risk ${fmt(risk,dp)} ${symInfo(formPlan.symbol).label==='pips'?'':'$'}${symInfo(formPlan.symbol).label==='pips'?'':''} / reward ${fmt(rew,dp)})`));
+  form.append(wrapFld('Thesis / level',noteA));
+  // reward:risk preview, live as the prices are typed
+  const rr=el('div',{class:'note',style:'margin-top:12px','aria-live':'polite'});
+  function updRR(){
+    const ok=formPlan.entry!=null&&formPlan.sl!=null&&formPlan.tp!=null&&Math.abs(formPlan.entry-formPlan.sl)>0;
+    rr.style.display=ok?'':'none';if(!ok)return;
+    const dp=symInfo(formPlan.symbol).dp,risk=Math.abs(formPlan.entry-formPlan.sl),rew=Math.abs(formPlan.tp-formPlan.entry);
+    rr.textContent='Planned reward:risk ≈ '+fmt(rew/risk,2)+'R  (risk '+fmt(risk,dp)+' / reward '+fmt(rew,dp)+')';
   }
+  form.append(rr);updRR();
   form.append(el('div',{style:'display:flex;gap:10px;margin-top:14px'},
     el('button',{class:'btn primary',onclick:async()=>{
       const p=Object.assign({id:'plan-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),createdMs:Date.now(),status:'pending',ticket:null,dev:null},formPlan,{setups:formPlan.setups.slice()});
       await savePlan(p);formPlan=blankPlan();toast('Plan logged','good');renderPlan();
-    }},'+ Log plan'),
+    }},icon('plus'),'Log plan'),
     el('button',{class:'btn ghost',onclick:()=>{formPlan=blankPlan();renderPlan();}},'Clear'))
   );
   root.append(form);
@@ -2411,7 +2690,7 @@ function renderPlan(){
       statCard('Skipped (discipline)',String(skip),'plans you chose not to chase')
     );
     root.append(cards);
-    root.append(el('div',{style:'display:flex;gap:10px;margin-bottom:14px'},el('button',{class:'btn sm',onclick:async()=>{await reconcilePlans();toast('Reconciled plans to trades','good');renderPlan();}},'↻ Reconcile to imported trades')));
+    root.append(el('div',{style:'display:flex;gap:10px;margin-bottom:14px'},el('button',{class:'btn sm',onclick:async()=>{await reconcilePlans();toast('Reconciled plans to trades','good');renderPlan();}},icon('refresh'),'Reconcile to imported trades')));
   }
 
   /* ---- plan list ---- */
@@ -2438,35 +2717,41 @@ function renderPlan(){
       card.append(el('div',{class:'dev',style:'margin-top:8px',html:'→ Taken as #'+escapeHtml(p.ticket)+(t?' · result '+(t.pl>=0?'<span class="match">':'<span class="off">')+usd(t.pl)+'</span>':'')+(devStr.length?' · vs plan: '+devStr.join(', '):'')}));
       if(t)card.append(el('div',{style:'margin-top:6px'},el('button',{class:'btn sm ghost',onclick:()=>openTrade(t.ticket)},'Open trade →')));
     }
-    card.append(el('div',{style:'margin-top:8px'},el('button',{class:'btn sm danger',onclick:async()=>{if(confirm('Delete this plan?')){await deletePlan(p.id);renderPlan();}}},'Delete')));
+    ph.append(el('button',{class:'btn icon','aria-label':'Delete plan',title:'Delete plan',onclick:async()=>{if(confirm('Delete this plan?')){await deletePlan(p.id);renderPlan();}}},icon('trash')));
     root.append(card);
   });
+}
 
+/* ---- Plan & Tools › Watchlist ---- */
+function planWatch(root){
   /* ---- watchlist ---- */
-  root.append(el('h2',{class:'sec'},'Watchlist — live levels'));
-  const wlBox=el('div',{class:'panel',style:'margin-bottom:18px'});
+  root.append(el('h2',{class:'sec'},'Watchlist'),el('div',{class:'cap'},'Levels you\'re stalking for a setup.'));
+  const wlBox=el('div',{class:'panel'});
   const wl=STATE.settings.watchlist||(STATE.settings.watchlist=[]);
   const wlList=el('div');
   function drawWL(){
     wlList.innerHTML='';
     wl.forEach((w,i)=>{
-      const symS=el('select',{onchange:e=>{w.symbol=e.target.value;saveSettings();},style:'max-width:110px'});INSTRUMENTS.forEach(s=>symS.append(el('option',{value:s,selected:w.symbol===s?'':null},s)));
+      const symS=el('select',{'aria-label':'Watchlist symbol',onchange:e=>{w.symbol=e.target.value;saveSettings();},style:'max-width:120px'});INSTRUMENTS.forEach(s=>symS.append(el('option',{value:s,selected:w.symbol===s?'':null},s)));
       wlList.append(el('div',{class:'wl-row'},
         symS,
-        el('input',{type:'text',value:w.price||'',placeholder:'Price / zone',style:'max-width:130px',oninput:e=>w.price=e.target.value}),
-        el('input',{type:'text',value:w.note||'',placeholder:'What you\'re waiting for (e.g. sweep of SSL then BOS)',oninput:e=>w.note=e.target.value}),
-        el('button',{class:'btn sm danger',onclick:async()=>{wl.splice(i,1);await saveSettings();drawWL();}},'✕')));
+        el('input',{type:'text',value:w.price||'',placeholder:'Price / zone','aria-label':'Price or zone',style:'max-width:140px',oninput:e=>w.price=e.target.value}),
+        el('input',{type:'text',value:w.note||'',placeholder:'What you\'re waiting for (e.g. sweep of SSL then BOS)','aria-label':'What you are waiting for',oninput:e=>w.note=e.target.value}),
+        el('button',{class:'btn icon','aria-label':'Remove from watchlist',title:'Remove',onclick:async()=>{wl.splice(i,1);await saveSettings();drawWL();}},icon('x'))));
     });
     if(!wl.length)wlList.append(el('div',{class:'faint',style:'font-size:.75rem;margin-bottom:8px'},'Nothing on watch. Add levels you\'re stalking for a setup.'));
   }
   drawWL();
   wlBox.append(wlList,el('div',{style:'display:flex;gap:10px;margin-top:6px'},
-    el('button',{class:'btn sm',onclick:async()=>{wl.push({symbol:INSTRUMENTS[0]||'',price:'',note:''});await saveSettings();drawWL();}},'+ Add level'),
+    el('button',{class:'btn sm',onclick:async()=>{wl.push({symbol:INSTRUMENTS[0]||'',price:'',note:''});await saveSettings();drawWL();}},icon('plus'),'Add level'),
     el('button',{class:'btn sm primary',onclick:async()=>{await saveSettings();toast('Watchlist saved','good');}},'Save watchlist')));
   root.append(wlBox);
+}
 
+/* ---- Plan & Tools › Position size ---- */
+function planSize(root){
   /* ---- position size calculator ---- */
-  root.append(el('h2',{class:'sec'},'Position size'));
+  root.append(el('h2',{class:'sec'},'Position size'),el('div',{class:'cap'},'Lots for a given risk and stop distance.'));
   const calc=el('div',{class:'panel'});
   const pvStore=STATE.settings.pointValues||(STATE.settings.pointValues={});
   const cstate={symbol:INSTRUMENTS[0]||'',risk:RULES.maxRisk,stop:null,usdjpy:STATE.settings.usdjpy||null,
@@ -2496,7 +2781,7 @@ function renderPlan(){
   renderPlanCalcStop();
   cr.append(wrapFld('Symbol',cSym),wrapFld('Risk ('+CURSYM.trim()+')',cRisk),stopWrap,jpyWrap);
   calc.append(cr,out);
-  calc.append(el('div',{class:'note',style:'margin-top:12px'},'Point value is what a 1.0 price move on 1.0 lot is worth: 100,000 for USD-quoted FX pairs, 100 for gold — for indices and other CFDs check your broker\'s contract specs, then it\'s remembered per symbol. Values assume a USD-quoted account; if yours isn\'t, treat the result as approximate. The per-trade cap of '+amt(RULES.maxRisk)+' stays the same for every instrument.'));
+  calc.append(el('div',{class:'cap',style:'margin-top:16px;padding-top:14px;border-top:1px solid var(--line)'},'Point value is what a 1.0 price move on 1.0 lot is worth: 100,000 for USD-quoted FX pairs, 100 for gold — for indices and other CFDs check your broker\'s contract specs, then it\'s remembered per symbol. Values assume a USD-quoted account; if yours isn\'t, treat the result as approximate. The per-trade cap of '+amt(RULES.maxRisk)+' stays the same for every instrument.'));
   root.append(calc);
   recalc();
 }
@@ -2506,115 +2791,79 @@ function renderPlan(){
    ============================================================ */
 function renderImport(){
   const root=$('#page-import');root.innerHTML='';
-  root.append(el('div',{class:'eyebrow'},'MT5 · Trade History Report (.html)'));
 
-  const dz=el('div',{class:'dropzone',style:'margin-bottom:16px'},'Drop your MT5 statement .html here, or click to choose');
+  /* ---- import ---- */
+  root.append(el('h2',{class:'sec'},'Import statement'),el('div',{class:'cap'},'MT5 · Trade History Report (.html)'));
+  const dz=el('div',{class:'dropzone',tabindex:'0',role:'button'},icon('upload'),el('span',{},'Drop your MT5 statement .html here, or click to choose'));
   const fi=el('input',{type:'file',accept:'.html,.htm',style:'display:none',onchange:e=>{if(e.target.files[0])handleStatement(e.target.files[0]);e.target.value='';}});
   dz.addEventListener('click',()=>fi.click());
+  dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click();}});
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('hot');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('hot'));
   dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('hot');const f=[...e.dataTransfer.files].find(f=>/\.html?$/i.test(f.name));if(f)handleStatement(f);});
   root.append(dz,fi);
+  root.append(el('div',{class:'cap',style:'margin-top:10px'},'Re-importing is safe: trades are matched by ticket, and your notes, tags and screenshots are kept.'));
 
-  root.append(el('div',{class:'note',style:'margin-bottom:16px'},'The file is UTF-16 LE with a BOM — Aether decodes it automatically. Only the Positions (closed-trade) section is imported; Orders & Deals are ignored. Re-importing is safe: trades are de-duplicated by ticket and your notes, tags and screenshots are preserved while the parsed numbers refresh.'));
-
-  // parsed summary panel
+  /* ---- parsed summary ---- */
   if(STATE.summary){
     root.append(el('h2',{class:'sec'},'Statement summary'));
     const a=STATE.account||{},S=STATE.summary;
-    const ap=el('div',{class:'panel',style:'margin-bottom:14px'});
+    const ap=el('div',{class:'panel'});
     const ag=el('div',{class:'grid',style:'grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0 18px'});
     [['Account',a.number],['Name',a.name],['Company',a.company],['Server',a.server],['Currency',a.currency],['Type',a.kind],['Leverage',a.leverage||'—'],['Report date',a.reportDate]].forEach(r=>ag.append(el('div',{class:'kv'},el('span',{class:'k'},r[0]),el('span',{class:'v'},r[1]||'—'))));
-    ap.append(ag);root.append(ap);
-
-    const sp=el('div',{class:'panel'});
-    const sg=el('div',{class:'grid',style:'grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 18px'});
+    ap.append(ag);
+    const sg=el('div',{class:'grid',style:'grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 18px;margin-top:14px;padding-top:6px;border-top:1px solid var(--line)'});
     [['Balance',S.balance],['Equity',S.equity],['Total net profit',S.netProfit],['Gross profit',S.grossProfit],['Gross loss',S.grossLoss],['Profit factor',S.profitFactor],['Expected payoff',S.expectedPayoff],['Recovery factor',S.recoveryFactor],['Sharpe ratio',S.sharpe],['Drawdown (abs)',S.ddAbsolute],['Drawdown (max)',S.ddMaximal],['Total trades',S.totalTrades],['Short (won%)',S.shortTrades],['Long (won%)',S.longTrades],['Profit trades',S.profitTrades],['Loss trades',S.lossTrades],['Largest win',S.largestProfit],['Largest loss',S.largestLoss],['Avg win',S.avgProfit],['Avg loss',S.avgLoss],['Max consec wins',S.maxConsecWins],['Max consec losses',S.maxConsecLosses]].forEach(r=>sg.append(el('div',{class:'kv'},el('span',{class:'k'},r[0]),el('span',{class:'v'},r[1]||'—'))));
-    sp.append(sg);root.append(sp);
+    ap.append(sg);root.append(ap);
   }
 
-  // sample data — offered only while the journal is empty, so fabricated trades can't mix with real ones
-  if(STATE.settings.demoData||!hasRealTrades()){
-    const demoP=el('div',{class:'panel',style:'margin-bottom:14px'});
-    demoP.append(el('div',{class:'note',style:'margin-bottom:12px'},STATE.settings.demoData
-      ?'Sample data is loaded. Importing a real statement clears it automatically.'
-      :'No statement handy? Load a fabricated account — six weeks of trades, a rule-breaking day, plans and a journal entry — and explore every page. One click removes it again.'));
-    demoP.append(STATE.settings.demoData
-      ?el('button',{class:'btn',onclick:async()=>{await clearDemoData();renderImport();}},'✕ Clear sample data')
-      :el('button',{class:'btn',onclick:loadDemoData},'▶ Load sample data'));
-    root.append(el('h2',{class:'sec'},'Sample data'),demoP);
-  }
+  /* ---- backup: everything lives in this browser, so this sits high ---- */
+  root.append(el('h2',{class:'sec'},'Backup'));
+  const bp=el('div',{class:'panel'});
+  bp.append(el('div',{class:'warn',style:'margin-bottom:14px'},'Everything (trades, notes, tags, screenshots, settings) lives in this browser\'s IndexedDB. Clearing site data / browser data will erase it permanently. Export a backup regularly — especially before clearing anything.'));
+  const bk=el('div',{style:'display:flex;gap:10px;flex-wrap:wrap'});
+  bk.append(el('button',{class:'btn primary',onclick:exportBackup},icon('download'),'Export full backup (.json)'),
+    el('button',{class:'btn',onclick:()=>$('#restoreFile').click()},icon('upload'),'Restore from backup'),
+    el('button',{class:'btn',onclick:exportTradesCSV},icon('table'),'Export trades (.csv)'));
+  const rf=el('input',{type:'file',accept:'.json',id:'restoreFile',style:'display:none',onchange:e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';}});
+  bp.append(bk,rf);root.append(bp);
 
-  // timezone setting
+  /* ---- settings: the statement clock ---- */
   root.append(el('h2',{class:'sec'},'Settings'));
-  const tzPanel=el('div',{class:'panel',style:'margin-bottom:14px'});
-  const tzIn=el('input',{type:'number',step:'1',value:STATE.settings.brokerOffsetHours||0,style:'max-width:120px',onchange:async e=>{STATE.settings.brokerOffsetHours=+e.target.value||0;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);toast('Timezone offset updated','good');}});
-  tzPanel.append(el('label',{class:'fld'},'Statement-time → your-time offset (hours)'),tzIn,el('div',{class:'faint',style:'font-size:.75rem;margin-top:6px'},'MT5 timestamps are in your broker server time. If that clock differs from the one you think in, set the hour offset here so session tagging and time-of-day stats line up with your day. Leave at 0 if the statement times already match.'));
-  root.append(tzPanel);
-
+  const tzPanel=el('div',{class:'panel'});
+  const tzIn=el('input',{type:'number',step:'1',value:STATE.settings.brokerOffsetHours||0,style:'max-width:120px',onchange:async e=>{STATE.settings.brokerOffsetHours=+e.target.value||0;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);renderLockBanner();toast('Timezone offset updated','good');}});
+  tzIn.id='tzOffset';
+  tzPanel.append(el('label',{class:'fld',for:'tzOffset'},'Statement-time → your-time offset (hours)'),tzIn,el('div',{class:'help'},'MT5 timestamps are in your broker server time. If that clock differs from the one you think in, set the hour offset here so session tagging and time-of-day stats line up with your day. Leave at 0 if the statement times already match.'));
   // offset suggestion — statements carry broker server time; most MT5 servers run UTC+3
   if(STATE.account&&!STATE.account.demo&&!(+STATE.settings.brokerOffsetHours)&&!STATE.settings.tzHintDismissed){
     const dev=-new Date().getTimezoneOffset()/60;
     const sug=Math.round((dev-3)*2)/2;
     if(sug!==0){
       const sTxt=(sug>0?'+':'')+sug;
-      const hint=el('div',{class:'panel',style:'margin-bottom:14px'});
-      hint.append(el('div',{class:'note',style:'margin-bottom:12px'},'Most MT5 brokers run server time at UTC+3. Your device is at UTC'+(dev>=0?'+':'')+dev+' — if your broker is one of them, an offset of '+sTxt+'h lines sessions up with your clock. It\'s a guess, not a reading: check one trade\'s open time before trusting it.'),
+      const hint=el('div',{class:'note',style:'margin-top:16px'});
+      hint.append(el('div',{style:'margin-bottom:12px'},'Most MT5 brokers run server time at UTC+3. Your device is at UTC'+(dev>=0?'+':'')+dev+' — if your broker is one of them, an offset of '+sTxt+'h lines sessions up with your clock. It\'s a guess, not a reading: check one trade\'s open time before trusting it.'),
         el('div',{style:'display:flex;gap:10px;flex-wrap:wrap'},
-          el('button',{class:'btn primary',onclick:async()=>{STATE.settings.brokerOffsetHours=sug;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);toast('Offset set to '+sTxt+'h — sessions re-tagged','good');renderImport();}},'Use '+sTxt+'h'),
-          el('button',{class:'btn ghost',onclick:async()=>{STATE.settings.tzHintDismissed=true;await saveSettings();renderImport();}},'No thanks')));
-      root.append(hint);
+          el('button',{class:'btn sm',onclick:async()=>{STATE.settings.brokerOffsetHours=sug;await saveSettings();STATE.trades=STATE.trades.map(t=>enrich(t));runRules(STATE.trades);toast('Offset set to '+sTxt+'h — sessions re-tagged','good');renderImport();}},'Use '+sTxt+'h'),
+          el('button',{class:'btn sm ghost',onclick:async()=>{STATE.settings.tzHintDismissed=true;await saveSettings();renderImport();}},'No thanks')));
+      tzPanel.append(hint);
     }
   }
-
-  // trading rules — the risk model the rule engine judges every trade against
-  root.append(el('h2',{class:'sec'},'Your trading rules'));
-  const rp=el('div',{class:'panel',style:'margin-bottom:14px'});
-  rp.append(el('div',{class:'note',style:'margin-bottom:13px'},'Aether flags trades that break these. They are yours — set them to the risk model you actually trade, in your account currency. Changing them re-judges your whole history.'));
-  const R=Object.assign({},DEFAULT_RULES,STATE.settings.rules||{});
-  const RF=[['maxRisk','Max risk per trade'],['dailyLoss','Daily loss cap'],['weeklyLoss','Weekly loss cap'],
-            ['scaleAfter','Scale down after a day above'],['scaledRisk','Scaled-down risk'],['drawback','Lock-in stop after scaling'],
-            ['breakMins','Forced break after a stopout (mins)']];
-  const grid=el('div',{class:'row',style:'flex-wrap:wrap;gap:12px'});
-  RF.forEach(([k,label])=>{
-    const inp=el('input',{type:'number',step:'0.01',value:R[k],style:'max-width:150px',
-      oninput:e=>{R[k]=e.target.value===''?0:+e.target.value;}});
-    grid.append(wrapFld(label,inp));
-  });
-  rp.append(grid);
-  const setupsIn=el('input',{type:'text',value:(STATE.settings.setups||DEFAULT_SETUPS).join(', '),
-    placeholder:'BOS, Liquidity sweep, Order block…'});
-  rp.append(el('div',{style:'margin-top:12px'},wrapFld('Your setups — comma separated, used for tagging and setup stats',setupsIn)));
-  const instIn=el('input',{type:'text',value:(STATE.settings.instruments||[]).join(', '),
-    placeholder:'EURUSD, XAUUSD, US30…'});
-  rp.append(el('div',{style:'margin-top:12px'},wrapFld('Instruments you trade — anything you import is added automatically',instIn)));
-  const rSave=el('button',{class:'btn primary',style:'margin-top:13px'},'Save rules');
-  rSave.addEventListener('click',async()=>{
-    const bad=RF.filter(([k])=>!(R[k]>0)).map(([,l])=>l);
-    if(bad.length){toast('Every rule needs a number above zero — check: '+bad.join(', '),true);return;}
-    STATE.settings.rules=R;
-    STATE.settings.setups=setupsIn.value.split(',').map(s=>s.trim()).filter(Boolean);
-    STATE.settings.instruments=instIn.value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean);
-    await saveSettings();
-    applyUserConfig();
-    STATE.trades=STATE.trades.map(t=>enrich(t));
-    runRules(STATE.trades);
-    toast('Rules saved — history re-judged','good');
-    renderImport();
-  });
-  rp.append(el('div',{},rSave));
-  root.append(rp);
+  root.append(tzPanel);
+  root.append(el('div',{class:'cap',style:'margin-top:10px'},'Your trading rules, setups and instruments are set under ',el('button',{class:'linkbtn',style:'font-size:inherit;padding:0',onclick:()=>go('rules')},'Rules & Levels'),'.'));
 
 
-  // backup
-  root.append(el('h2',{class:'sec'},'Backup'));
-  root.append(el('div',{class:'warn',style:'margin-bottom:12px'},'⚠ Everything (trades, notes, tags, screenshots, settings) lives in this browser\'s IndexedDB. Clearing site data / browser data will erase it permanently. Export a backup regularly — especially before clearing anything.'));
-  const bk=el('div',{style:'display:flex;gap:10px;flex-wrap:wrap'});
-  bk.append(el('button',{class:'btn primary',onclick:exportBackup},'⤓ Export full backup (.json)'),
-    el('button',{class:'btn',onclick:()=>$('#restoreFile').click()},'⤒ Restore from backup'),
-    el('button',{class:'btn',onclick:exportTradesCSV},'⇥ Export trades (.csv)'));
-  const rf=el('input',{type:'file',accept:'.json',id:'restoreFile',style:'display:none',onchange:e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';}});
-  root.append(bk,rf);
+  /* ---- sample data — offered only while the journal is empty, so fabricated trades can't mix with real ones ---- */
+  if(STATE.settings.demoData||!hasRealTrades()){
+    root.append(el('h2',{class:'sec'},'Sample data'));
+    const demoP=el('div',{class:'panel'});
+    demoP.append(el('div',{class:'cap',style:'margin-bottom:12px;color:var(--muted)'},STATE.settings.demoData
+      ?'Sample data is loaded. Importing a real statement clears it automatically.'
+      :'No statement handy? Load a fabricated account — six weeks of trades, a rule-breaking day, plans and a journal entry — and explore every page. One click removes it again.'));
+    demoP.append(STATE.settings.demoData
+      ?el('button',{class:'btn danger',onclick:async()=>{await clearDemoData();renderImport();}},icon('x'),'Clear sample data')
+      :el('button',{class:'btn',onclick:loadDemoData},icon('play'),'Load sample data'));
+    root.append(demoP);
+  }
 }
 
 /* ============================================================
@@ -2714,7 +2963,7 @@ async function loadDemoData(){
   await saveSettings();
   await loadAll();
   await reconcilePlans();
-  toast('Sample data loaded — explore freely, clear it from Import','good');
+  toast('Sample data loaded — explore freely, clear it from Data & Settings','good');
   go('dashboard');
 }
 async function clearDemoData(silent){
@@ -2777,7 +3026,7 @@ async function handleStatement(file){
     toast(`Imported ${parsed.trades.length} trades — ${added} new, ${updated} updated`,'good');
     STATE.settings.importsSinceBackup=(STATE.settings.importsSinceBackup||0)+1;await saveSettings();
     if(STATE.settings.importsSinceBackup%3===0)
-      setTimeout(()=>toast(STATE.settings.importsSinceBackup+' imports since your last backup — everything lives in this browser, so export one from Import → Backup'),3100);
+      setTimeout(()=>toast(STATE.settings.importsSinceBackup+' imports since your last backup — everything lives in this browser, so export one from Data & Settings → Backup'),3100);
     renderImport();
   }catch(err){console.error(err);loader.remove();
     const root=$('#page-import');
@@ -2831,43 +3080,80 @@ async function importBackup(file){
 /* ============================================================
    RULES & LEVELS
    ============================================================ */
+/* Each rule, the words it is edited under, and one line on what it does. The
+   meaning of every rule is unchanged — this is the same risk model runRules() judges. */
+const RULE_FIELDS=[
+  {grp:'Per trade',k:'maxRisk',label:'Max risk per trade',money:true,help:'The most you may risk on any single trade.'},
+  {grp:'Loss caps',k:'dailyLoss',label:'Daily loss cap',money:true,help:'Pooled across all instruments. The primary discipline: trade freely while you still have loss room.'},
+  {grp:'Loss caps',k:'weeklyLoss',label:'Weekly loss cap',money:true,help:'Pooled across all instruments.'},
+  {grp:'Profit scaling',k:'scaleAfter',label:'Scale down after a day above',money:true,help:'Once the day is up this much, risk per trade scales down.'},
+  {grp:'Profit scaling',k:'scaledRisk',label:'Scaled-down risk',money:true,help:'Risk per trade once scaling is active.'},
+  {grp:'Profit scaling',k:'drawback',label:'Lock-in stop after scaling',money:true,help:'The drawback (lock-in) stop that protects the day once scaled.'},
+  {grp:'After a stopout',k:'breakMins',label:'Forced break after a stopout (mins)',money:false,help:'Mandatory break after any stopout — no new entries inside that window.'}
+];
 function renderRules(){
   const root=$('#page-rules');root.innerHTML='';
-  root.append(el('div',{class:'eyebrow'},'Your trading rules · pooled across every instrument you trade'));
-  const rules=[
-    ['Daily loss cap',amt(RULES.dailyLoss)+' daily loss limit — pooled across all instruments. This is the primary discipline: trade freely while you still have loss room.'],
-    ['Weekly loss cap',amt(RULES.weeklyLoss)+' weekly loss limit — pooled across all instruments.'],
-    ['Risk per trade','Max '+amt(RULES.maxRisk)+' risk on any single trade.'],
-    ['Profit scaling','After +'+amt(RULES.scaleAfter)+' on the day, scale risk down to '+amt(RULES.scaledRisk)+' per trade with a '+amt(RULES.drawback)+' drawback (lock-in) stop.'],
-    ['Break after stopout','Mandatory '+RULES.breakMins+'-minute break after any stopout — no new entries inside that window.']
-  ];
-  const rp=el('div',{class:'panel'});
-  rules.forEach(r=>rp.append(el('div',{class:'kv',style:'align-items:flex-start;flex-direction:column;gap:2px'},el('span',{style:'font-weight:600'},r[0]),el('span',{class:'muted'},r[1]))));
+  root.append(el('h2',{class:'sec'},'Your trading rules'),
+    el('div',{class:'cap'},'Pooled across every instrument you trade. Aether flags trades that break these — set them to the risk model you actually trade, in your account currency. Changing them re-judges your whole history.'));
+  const rp=el('div',{class:'panel rulesform'});
+  const R=Object.assign({},DEFAULT_RULES,STATE.settings.rules||{});
+  let grpBox=null,grpName=null;
+  RULE_FIELDS.forEach(f=>{
+    if(f.grp!==grpName){grpName=f.grp;grpBox=el('div',{class:'rulefields'});rp.append(el('div',{class:'rulegrp'},el('div',{class:'k'},f.grp),grpBox));}
+    const id='rule-'+f.k;
+    const inp=el('input',{type:'number',id,step:f.k==='breakMins'?'1':'0.01',min:'0',inputmode:'decimal',value:R[f.k],'aria-describedby':id+'-help',
+      oninput:e=>{R[f.k]=e.target.value===''?0:+e.target.value;}});
+    grpBox.append(el('div',{class:'rulefld'},
+      el('label',{class:'fld',for:id},f.label+(f.money?' ('+CURSYM.trim()+')':'')),
+      inp,
+      el('div',{class:'help',id:id+'-help'},f.help)));
+  });
+  const setupsIn=el('input',{type:'text',id:'rule-setups',value:(STATE.settings.setups||DEFAULT_SETUPS).join(', '),placeholder:'BOS, Liquidity sweep, Order block…'});
+  const instIn=el('input',{type:'text',id:'rule-instruments',value:(STATE.settings.instruments||[]).join(', '),placeholder:'EURUSD, XAUUSD, US30…'});
+  rp.append(el('div',{class:'rulegrp'},el('div',{class:'k'},'Vocabulary'),
+    el('div',{class:'rulefld wide'},el('label',{class:'fld',for:'rule-setups'},'Your setups'),setupsIn,el('div',{class:'help'},'Comma separated. Used for tagging trades and for setup stats.')),
+    el('div',{class:'rulefld wide',style:'margin-top:14px'},el('label',{class:'fld',for:'rule-instruments'},'Instruments you trade'),instIn,el('div',{class:'help'},'Anything you import is added automatically.'))));
+  const rSave=el('button',{class:'btn primary'},'Save rules');
+  rSave.addEventListener('click',async()=>{
+    const bad=RULE_FIELDS.filter(f=>!(R[f.k]>0)).map(f=>f.label);
+    if(bad.length){toast('Every rule needs a number above zero — check: '+bad.join(', '),true);return;}
+    STATE.settings.rules=R;
+    STATE.settings.setups=setupsIn.value.split(',').map(s=>s.trim()).filter(Boolean);
+    STATE.settings.instruments=instIn.value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean);
+    await saveSettings();
+    applyUserConfig();
+    STATE.trades=STATE.trades.map(t=>enrich(t));
+    runRules(STATE.trades);
+    toast('Rules saved — history re-judged','good');
+    renderLockBanner();
+    renderRules();
+  });
+  rp.append(el('div',{class:'rulesave'},rSave));
   root.append(rp);
-  root.append(el('div',{class:'note',style:'margin-top:10px'},'Instruments differ in point value, typical stop width and spread, so position size has to be worked out per instrument — but your '+amt(RULES.maxRisk)+' / '+amt(RULES.dailyLoss)+' / '+amt(RULES.weeklyLoss)+' caps apply identically to all of them.'));
+  root.append(el('div',{class:'cap',style:'margin-top:12px'},'Instruments differ in point value, typical stop width and spread, so position size has to be worked out per instrument — but your '+amt(RULES.maxRisk)+' / '+amt(RULES.dailyLoss)+' / '+amt(RULES.weeklyLoss)+' caps apply identically to all of them.'));
 
   // editable key levels
-  root.append(el('h2',{class:'sec'},'Key levels'));
+  root.append(el('h2',{class:'sec'},'Key levels'),el('div',{class:'cap'},'Recurring levels you keep coming back to, per instrument.'));
   INSTRUMENTS.forEach(sym=>{
     const info=symInfo(sym);
     const box=el('div',{class:'panel',style:'margin-bottom:14px'});
-    box.append(el('h4',{style:'margin:0 0 12px'},el('span',{class:'pill '+info.cls},sym),' ',el('span',{class:'muted',style:'font-weight:400'},'recurring levels')));
+    box.append(el('h4',{style:'margin:0 0 12px'},el('span',{class:'pill '+info.cls},sym)));
     const list=STATE.settings.keyLevels[sym]||(STATE.settings.keyLevels[sym]=[]);
     const rows=el('div');
     function draw(){
       rows.innerHTML='';
       list.forEach((lv,i)=>{
-        const labIn=el('input',{class:'lblw',type:'text',value:lv.label,placeholder:'Label',oninput:e=>lv.label=e.target.value});
-        const valIn=el('input',{type:'text',value:lv.value,placeholder:'Price / zone',oninput:e=>lv.value=e.target.value});
-        rows.append(el('div',{class:'levelrow'},labIn,valIn,el('button',{class:'btn sm danger',onclick:async()=>{list.splice(i,1);await saveSettings();draw();}},'✕')));
+        const labIn=el('input',{class:'lblw',type:'text',value:lv.label,placeholder:'Label','aria-label':sym+' level label',oninput:e=>lv.label=e.target.value});
+        const valIn=el('input',{type:'text',value:lv.value,placeholder:'Price / zone','aria-label':sym+' level price or zone',oninput:e=>lv.value=e.target.value});
+        rows.append(el('div',{class:'levelrow'},labIn,valIn,el('button',{class:'btn icon','aria-label':'Remove level',title:'Remove',onclick:async()=>{list.splice(i,1);await saveSettings();draw();}},icon('x'))));
       });
       if(!list.length)rows.append(el('div',{class:'faint',style:'font-size:.75rem;margin-bottom:8px'},'No levels yet for '+sym+' — add the ones you keep coming back to.'));
     }
     draw();
     box.append(rows);
     box.append(el('div',{style:'display:flex;gap:10px;margin-top:6px'},
-      el('button',{class:'btn sm',onclick:async()=>{list.push({label:'',value:''});await saveSettings();draw();}},'+ Add level'),
-      el('button',{class:'btn sm primary',onclick:async()=>{await saveSettings();toast(sym+' levels saved','good');}},'Save '+sym)));
+      el('button',{class:'btn sm',onclick:async()=>{list.push({label:'',value:''});await saveSettings();draw();}},icon('plus'),'Add level'),
+      el('button',{class:'btn sm',onclick:async()=>{await saveSettings();toast(sym+' levels saved','good');}},'Save '+sym)));
     root.append(box);
   });
 }
@@ -2875,19 +3161,20 @@ function renderRules(){
 /* ============================================================
    CHECKLIST
    ============================================================ */
+/* ticks live in memory only (as before) — they survive moving between pages, not a reload */
+const CHECK_TICKS=new Set();
 function renderChecklist(){
   const root=$('#page-checklist');root.innerHTML='';
   // live pooled usage TODAY / THIS WEEK — the same numbers the banner uses
   const {tKey,dayPL,weekPL,sinceLoss,inBreak,roomDaily,roomWeekly}=liveStatus();
   root.append(el('div',{class:'eyebrow'},'Live pooled status · '+tKey));
-  const cards=el('div',{class:'cards',style:'margin-bottom:18px'});
-  cards.append(
-    statCard('Loss room today',usd(Math.max(0,roomDaily)),'before the −'+amt(RULES.dailyLoss)+' cap',roomDaily<=RULES.maxRisk?'neg':'pos'),
-    statCard('Day P&L',usd(dayPL),'cap -'+amt(RULES.dailyLoss),signCls(dayPL)),
-    statCard('Week P&L',usd(weekPL),'cap -'+amt(RULES.weeklyLoss),signCls(weekPL)),
-    statCard('Since last stopout',sinceLoss==null||sinceLoss<0?'—':(sinceLoss<60?Math.round(sinceLoss)+'m':Math.floor(sinceLoss/60)+'h '+Math.round(sinceLoss%60)+'m'),inBreak?('in '+RULES.breakMins+'m break'):'clear',inBreak?'neg':'pos')
-  );
-  root.append(cards);
+  const figs=el('div',{class:'panel',style:'margin-bottom:8px'});
+  figs.append(el('div',{class:'figrow'},
+    figure('Loss room today',usd(Math.max(0,roomDaily)),roomDaily<=RULES.maxRisk?'neg':'pos','before the −'+amt(RULES.dailyLoss)+' cap'),
+    figure('Day P&L',usd(dayPL),signCls(dayPL),'cap -'+amt(RULES.dailyLoss)),
+    figure('Week P&L',usd(weekPL),signCls(weekPL),'cap -'+amt(RULES.weeklyLoss)),
+    figure('Since last stopout',sinceLoss==null||sinceLoss<0?'—':(sinceLoss<60?Math.round(sinceLoss)+'m':Math.floor(sinceLoss/60)+'h '+Math.round(sinceLoss%60)+'m'),inBreak?'neg':'pos',inBreak?('in '+RULES.breakMins+'m break'):'clear')));
+  root.append(figs);
 
   const dailyOK=dayPL>-RULES.dailyLoss, weeklyOK=weekPL>-RULES.weeklyLoss;
   const scaled=dayPL>=RULES.scaleAfter;
@@ -2898,12 +3185,6 @@ function renderChecklist(){
     [weeklyOK,'Within weekly loss cap', `Week P&L ${usd(weekPL)} vs −${amt(RULES.weeklyLoss)} limit · ${usd(Math.max(0,roomWeekly))} of room left.`],
     [!inBreak,'Not inside the '+breakLabel()+' stopout break', inBreak?`Last stopout was ${Math.round(sinceLoss)}m ago — wait ${Math.max(0,Math.ceil(RULES.breakMins-sinceLoss))}m more.`:'No recent stopout blocking you.']
   ];
-  auto.forEach(a=>{root.append(el('div',{class:'check '+(a[0]?'auto-ok':'auto-bad')},
-    el('div',{style:'font-size:1rem;margin-top:1px'},a[0]?'✓':'⚠'),
-    el('div',{},el('div',{class:'ttl'},a[1]),el('div',{class:'desc'},a[2]))));});
-
-  if(scaled)root.append(el('div',{class:'note',style:'margin-bottom:9px'},'You\'re past +'+amt(RULES.scaleAfter)+' today — scaling rule active: risk '+amt(RULES.scaledRisk)+' per trade, lock in with a '+amt(RULES.drawback)+' drawback stop.'));
-
   const manual=[
     ['Risk ≤ '+amt(scaled?RULES.scaledRisk:RULES.maxRisk),'Position sized for this instrument so the worst case stays inside your per-trade cap.'],
     ['Higher timeframe agrees','Structure above your entry timeframe supports the direction?'],
@@ -2911,7 +3192,41 @@ function renderChecklist(){
     ['Level mapped','Entry tied to a level you marked before the session?'],
     ['Exit defined','Stop and target both set before entry, not after?']
   ];
-  manual.forEach(m=>root.append(el('label',{class:'check'},el('input',{type:'checkbox'}),el('div',{},el('div',{class:'ttl'},m[0]),el('div',{class:'desc'},m[1])))));
+
+  // progress across both kinds, and a clear Ready once everything passes
+  const prog=el('div',{class:'ckprog','aria-live':'polite'});
+  const meter=el('div',{class:'ckmeter'},el('i',{}));
+  const reset=el('button',{class:'btn sm ghost',onclick:()=>{CHECK_TICKS.clear();root.querySelectorAll('.tick input').forEach(c=>{c.checked=false;});upd();}},icon('refresh'),'Reset');
+  root.append(el('div',{class:'ckhead'},prog,reset),meter);
+  function upd(){
+    const autoOK=auto.filter(a=>a[0]).length,ticked=manual.filter((_,i)=>CHECK_TICKS.has(i)).length;
+    const total=auto.length+manual.length,n=autoOK+ticked,ready=n===total;
+    prog.className='ckprog'+(ready?' ready':autoOK<auto.length?' blocked':'');
+    prog.replaceChildren(...(ready?[icon('checkCircle'),el('b',{},'Ready'),' — every check passes']:[el('b',{},n+' of '+total),' checks pass'+(autoOK<auto.length?' · an automatic check is failing':'')]));
+    meter.className='ckmeter'+(ready?' ready':'');meter.firstChild.style.width=(n/total*100)+'%';
+    reset.disabled=!CHECK_TICKS.size;
+  }
+
+  // automatic checks are facts read from the journal — a status row, not something to tick
+  const facts=el('div',{class:'panel cklist',role:'list','aria-label':'Automatic checks'});
+  facts.append(el('div',{class:'ckgrp'},'From your journal'));
+  auto.forEach(a=>facts.append(el('div',{class:'fact '+(a[0]?'ok':'bad'),role:'listitem'},
+    el('span',{class:'fic'},icon(a[0]?'checkCircle':'alert')),
+    el('div',{},el('div',{class:'ttl'},a[1]),el('div',{class:'desc'},a[2])))));
+  root.append(facts);
+
+  if(scaled)root.append(el('div',{class:'note',style:'margin:12px 0 0'},'You\'re past +'+amt(RULES.scaleAfter)+' today — scaling rule active: risk '+amt(RULES.scaledRisk)+' per trade, lock in with a '+amt(RULES.drawback)+' drawback stop.'));
+
+  // manual checks: full-width rows, the whole row is the tap target
+  const ticks=el('div',{class:'panel cklist',style:'margin-top:12px'});
+  ticks.append(el('div',{class:'ckgrp'},'Before you enter'));
+  manual.forEach((m,i)=>{
+    const cb=el('input',{type:'checkbox',onchange:e=>{if(e.target.checked)CHECK_TICKS.add(i);else CHECK_TICKS.delete(i);upd();}});
+    cb.checked=CHECK_TICKS.has(i);
+    ticks.append(el('label',{class:'tick'},cb,el('span',{class:'tickmark','aria-hidden':'true'},icon('check')),el('div',{},el('div',{class:'ttl'},m[0]),el('div',{class:'desc'},m[1]))));
+  });
+  root.append(ticks);
+  upd();
 
   root.append(el('h2',{class:'sec'},'Post-trade review'));
   const pr=el('div',{class:'panel'});
